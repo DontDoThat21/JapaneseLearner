@@ -1,0 +1,391 @@
+<UserControl x:Class="JapaneseTracker.Views.KanjiView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
+             Background="Transparent">
+    
+    <UserControl.DataContext>
+        <viewModels:KanjiViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header Section -->
+        <materialDesign:Card Grid.Row="0" Margin="0,0,0,16" Padding="24">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Kanji Learning" 
+                               FontSize="28" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="Master Japanese characters with stroke order and mnemonics"
+                               FontSize="16"
+                               Opacity="0.7"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- JLPT Level Filter -->
+                    <ComboBox ItemsSource="{Binding JLPTLevels}"
+                              SelectedItem="{Binding SelectedJLPTLevel}"
+                              materialDesign:HintAssist.Hint="JLPT Level"
+                              MinWidth="120"
+                              Margin="0,0,16,0"/>
+                    
+                    <!-- Search Box -->
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Search kanji..."
+                             MinWidth="200"
+                             Margin="0,0,16,0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchKanjiCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    
+                    <!-- Search Button -->
+                    <Button Command="{Binding SearchKanjiCommand}"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            ToolTip="Search">
+                        <materialDesign:PackIcon Kind="Magnify"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+        
+        <!-- Stats Cards -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Total Kanji -->
+            <materialDesign:Card Grid.Column="0" Margin="0,0,8,0" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="{Binding KanjiList.Count, StringFormat='{}Total: {0}'}"
+                               FontSize="18"
+                               FontWeight="SemiBold"/>
+                    <TextBlock Text="Kanji"
+                               FontSize="14"
+                               Opacity="0.7"/>
+                </StackPanel>
+            </materialDesign:Card>
+            
+            <!-- Learned -->
+            <materialDesign:Card Grid.Column="1" Margin="8,0,8,0" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="{Binding LearnedCount, StringFormat='{}Learned: {0}'}"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource SuccessBrush}"/>
+                    <TextBlock Text="Kanji"
+                               FontSize="14"
+                               Opacity="0.7"/>
+                </StackPanel>
+            </materialDesign:Card>
+            
+            <!-- Review Due -->
+            <materialDesign:Card Grid.Column="2" Margin="8,0,8,0" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="{Binding ReviewDueCount, StringFormat='{}Due: {0}'}"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource WarningBrush}"/>
+                    <TextBlock Text="Reviews"
+                               FontSize="14"
+                               Opacity="0.7"/>
+                </StackPanel>
+            </materialDesign:Card>
+            
+            <!-- Study Streak -->
+            <materialDesign:Card Grid.Column="3" Margin="8,0,0,0" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="{Binding CurrentUser.StudyStreak, StringFormat='{}Streak: {0}'}"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource SecondaryBrush}"/>
+                    <TextBlock Text="Days"
+                               FontSize="14"
+                               Opacity="0.7"/>
+                </StackPanel>
+            </materialDesign:Card>
+        </Grid>
+        
+        <!-- Main Content -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Kanji List -->
+            <materialDesign:Card Grid.Column="0" Margin="0,0,8,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header -->
+                    <Border Grid.Row="0" 
+                            Background="{StaticResource PrimaryBrush}" 
+                            Padding="16,12">
+                        <TextBlock Text="Kanji List" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource OnPrimaryBrush}"/>
+                    </Border>
+                    
+                    <!-- List -->
+                    <ListBox Grid.Row="1"
+                             ItemsSource="{Binding KanjiList}"
+                             SelectedItem="{Binding SelectedKanji}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource DividerBrush}" 
+                                        BorderThickness="0,0,0,1" 
+                                        Padding="16,12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- Kanji Character -->
+                                        <TextBlock Grid.Column="0" 
+                                                   Text="{Binding Character}" 
+                                                   FontSize="24" 
+                                                   FontFamily="{StaticResource JapaneseFontFamily}"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,16,0"/>
+                                        
+                                        <!-- Meaning -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Meaning}" 
+                                                       FontSize="14" 
+                                                       FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding JLPTLevel}" 
+                                                       FontSize="12" 
+                                                       Foreground="{Binding JLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"
+                                                       Opacity="0.8"/>
+                                        </StackPanel>
+                                        
+                                        <!-- SRS Level -->
+                                        <materialDesign:PackIcon Grid.Column="2" 
+                                                               Kind="{Binding SRSLevel, Converter={StaticResource SRSLevelToIconConverter}}" 
+                                                               Width="16" 
+                                                               Height="16"
+                                                               VerticalAlignment="Center"
+                                                               Opacity="0.6"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </materialDesign:Card>
+            
+            <!-- Kanji Details -->
+            <materialDesign:Card Grid.Column="1" Margin="8,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header -->
+                    <Border Grid.Row="0" 
+                            Background="{StaticResource PrimaryBrush}" 
+                            Padding="16,12">
+                        <TextBlock Text="Kanji Details" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource OnPrimaryBrush}"/>
+                    </Border>
+                    
+                    <!-- Details Content -->
+                    <ScrollViewer Grid.Row="1" Padding="24">
+                        <StackPanel>
+                            <!-- No Selection Message -->
+                            <StackPanel Visibility="{Binding SelectedKanji, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="SelectionSearch" 
+                                                       Width="64" 
+                                                       Height="64" 
+                                                       Opacity="0.3"
+                                                       HorizontalAlignment="Center"/>
+                                <TextBlock Text="Select a kanji to view details"
+                                           FontSize="18"
+                                           Opacity="0.7"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,16,0,0"/>
+                            </StackPanel>
+                            
+                            <!-- Kanji Details -->
+                            <StackPanel Visibility="{Binding SelectedKanji, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                
+                                <!-- Large Kanji Display -->
+                                <Border Background="{StaticResource SurfaceBrush}"
+                                        BorderBrush="{StaticResource DividerBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="32"
+                                        Margin="0,0,0,24"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding SelectedKanji.Character}" 
+                                               FontSize="120" 
+                                               FontFamily="{StaticResource JapaneseFontFamily}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                
+                                <!-- Basic Info -->
+                                <Grid Margin="0,0,0,24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Meaning" 
+                                                   FontWeight="SemiBold" 
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding SelectedKanji.Meaning}" 
+                                                   FontSize="16"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="JLPT Level" 
+                                                   FontWeight="SemiBold" 
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding SelectedKanji.JLPTLevel}" 
+                                                   FontSize="16"
+                                                   Foreground="{Binding SelectedKanji.JLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"/>
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <!-- Readings -->
+                                <StackPanel Margin="0,0,0,24">
+                                    <TextBlock Text="Readings" 
+                                               FontWeight="SemiBold" 
+                                               FontSize="16" 
+                                               Margin="0,0,0,12"/>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- On Readings -->
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="On-yomi (音読み)" 
+                                                       FontWeight="SemiBold" 
+                                                       Margin="0,0,0,4"/>
+                                            <ItemsControl ItemsSource="{Binding SelectedKanji.OnReadings}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" 
+                                                                   FontSize="14"
+                                                                   FontFamily="{StaticResource JapaneseFontFamily}"
+                                                                   Margin="0,2"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                        
+                                        <!-- Kun Readings -->
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Kun-yomi (訓読み)" 
+                                                       FontWeight="SemiBold" 
+                                                       Margin="0,0,0,4"/>
+                                            <ItemsControl ItemsSource="{Binding SelectedKanji.KunReadings}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" 
+                                                                   FontSize="14"
+                                                                   FontFamily="{StaticResource JapaneseFontFamily}"
+                                                                   Margin="0,2"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                                
+                                <!-- Additional Info -->
+                                <Grid Margin="0,0,0,24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Stroke Count" 
+                                                   FontWeight="SemiBold" 
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding SelectedKanji.StrokeCount}" 
+                                                   FontSize="16"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="School Grade" 
+                                                   FontWeight="SemiBold" 
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding SelectedKanji.Grade, StringFormat='Grade {0}'}" 
+                                                   FontSize="16"/>
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <!-- Action Buttons -->
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Center"
+                                            Margin="0,24,0,0">
+                                    <Button Command="{Binding StudyKanjiCommand}"
+                                            CommandParameter="{Binding SelectedKanji}"
+                                            Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Margin="0,0,16,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="School" 
+                                                                   Width="18" 
+                                                                   Height="18"
+                                                                   Margin="0,0,8,0"/>
+                                            <TextBlock Text="Study"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Command="{Binding GetMnemonicCommand}"
+                                            CommandParameter="{Binding SelectedKanji}"
+                                            Style="{StaticResource MaterialDesignOutlinedButton}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Lightbulb" 
+                                                                   Width="18" 
+                                                                   Height="18"
+                                                                   Margin="0,0,8,0"/>
+                                            <TextBlock Text="Get Mnemonic"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </materialDesign:Card>
+        </Grid>
+    </Grid>
+</UserControl>

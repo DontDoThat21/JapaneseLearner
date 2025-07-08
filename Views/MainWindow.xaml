@@ -179,25 +179,38 @@
                     </materialDesign:Card>
                     
                     <!-- Content Views -->
-                    <ContentControl Content="{Binding}">
-                        <ContentControl.Resources>
-                            <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
-                                <views:DashboardView/>
-                            </DataTemplate>
-                        </ContentControl.Resources>
-                    </ContentControl>
+                    <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Dashboard'}">
+                        <views:DashboardView/>
+                    </Grid>
                     
-                    <!-- Default Dashboard View -->
-                    <views:DashboardView Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Dashboard'}"/>
+                    <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Practice'}">
+                        <views:PracticeView/>
+                    </Grid>
                     
                     <!-- Placeholder for other views -->
-                    <TextBlock Text="{Binding SelectedView, StringFormat='Coming Soon: {0} View'}"
-                             FontSize="24"
-                             FontWeight="Light"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             Opacity="0.6"
-                             Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='!Dashboard'}"/>
+                    <StackPanel HorizontalAlignment="Center" 
+                              VerticalAlignment="Center"
+                              Opacity="0.6">
+                        <StackPanel.Visibility>
+                            <MultiBinding Converter="{StaticResource BooleanToVisibilityConverter}">
+                                <Binding Path="SelectedView" Converter="{StaticResource ViewNotImplementedConverter}"/>
+                            </MultiBinding>
+                        </StackPanel.Visibility>
+                        <materialDesign:PackIcon Kind="Construction" 
+                                               Width="64" 
+                                               Height="64" 
+                                               HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding SelectedView, StringFormat='Coming Soon: {0} View'}"
+                                 FontSize="24"
+                                 FontWeight="Light"
+                                 HorizontalAlignment="Center"
+                                 Margin="0,16,0,0"/>
+                        <TextBlock Text="This feature is under development"
+                                 FontSize="16"
+                                 HorizontalAlignment="Center"
+                                 Opacity="0.8"
+                                 Margin="0,8,0,0"/>
+                    </StackPanel>
                 </Grid>
             </DockPanel>
         </materialDesign:DrawerHost>

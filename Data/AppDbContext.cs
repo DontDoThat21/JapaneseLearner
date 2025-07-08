@@ -161,6 +161,34 @@ namespace JapaneseTracker.Data
             };
             
             modelBuilder.Entity<Kanji>().HasData(sampleKanji);
+            
+            // Seed sample Vocabulary
+            var sampleVocabulary = new[]
+            {
+                new { VocabId = 1, Word = "こんにちは", Reading = "こんにちは", Meaning = "hello, good afternoon", PartOfSpeech = "interjection", JLPTLevel = "N5", PitchAccent = 4, ExampleSentencesJson = "[]", RelatedKanjiJson = "[]" },
+                new { VocabId = 2, Word = "ありがとう", Reading = "ありがとう", Meaning = "thank you", PartOfSpeech = "interjection", JLPTLevel = "N5", PitchAccent = 4, ExampleSentencesJson = "[]", RelatedKanjiJson = "[]" },
+                new { VocabId = 3, Word = "すみません", Reading = "すみません", Meaning = "excuse me, sorry", PartOfSpeech = "interjection", JLPTLevel = "N5", PitchAccent = 4, ExampleSentencesJson = "[]", RelatedKanjiJson = "[]" },
+                new { VocabId = 4, Word = "学生", Reading = "がくせい", Meaning = "student", PartOfSpeech = "noun", JLPTLevel = "N5", PitchAccent = 0, ExampleSentencesJson = "[]", RelatedKanjiJson = "[\"学\",\"生\"]" },
+                new { VocabId = 5, Word = "先生", Reading = "せんせい", Meaning = "teacher", PartOfSpeech = "noun", JLPTLevel = "N5", PitchAccent = 3, ExampleSentencesJson = "[]", RelatedKanjiJson = "[\"先\",\"生\"]" },
+                new { VocabId = 6, Word = "友達", Reading = "ともだち", Meaning = "friend", PartOfSpeech = "noun", JLPTLevel = "N5", PitchAccent = 2, ExampleSentencesJson = "[]", RelatedKanjiJson = "[\"友\",\"達\"]" },
+                new { VocabId = 7, Word = "家族", Reading = "かぞく", Meaning = "family", PartOfSpeech = "noun", JLPTLevel = "N5", PitchAccent = 1, ExampleSentencesJson = "[]", RelatedKanjiJson = "[\"家\",\"族\"]" },
+                new { VocabId = 8, Word = "食べる", Reading = "たべる", Meaning = "to eat", PartOfSpeech = "verb", JLPTLevel = "N5", PitchAccent = 2, ExampleSentencesJson = "[]", RelatedKanjiJson = "[\"食\"]" }
+            };
+            
+            modelBuilder.Entity<Vocabulary>().HasData(sampleVocabulary);
+            
+            // Seed sample Grammar
+            var sampleGrammar = new[]
+            {
+                new { GrammarId = 1, Pattern = "です/である", Meaning = "to be (polite/formal)", Structure = "Noun + です", JLPTLevel = "N5", ExamplesJson = "[]", Notes = "Basic copula for polite speech", RelatedGrammarJson = "[]" },
+                new { GrammarId = 2, Pattern = "は (particle)", Meaning = "topic marker", Structure = "Noun + は + predicate", JLPTLevel = "N5", ExamplesJson = "[]", Notes = "Marks the topic of the sentence", RelatedGrammarJson = "[]" },
+                new { GrammarId = 3, Pattern = "を (particle)", Meaning = "object marker", Structure = "Noun + を + verb", JLPTLevel = "N5", ExamplesJson = "[]", Notes = "Marks the direct object", RelatedGrammarJson = "[]" },
+                new { GrammarId = 4, Pattern = "に (particle)", Meaning = "destination, time, indirect object", Structure = "Noun + に", JLPTLevel = "N5", ExamplesJson = "[]", Notes = "Multiple uses including destination and time", RelatedGrammarJson = "[]" },
+                new { GrammarId = 5, Pattern = "で (particle)", Meaning = "location of action, means", Structure = "Noun + で", JLPTLevel = "N5", ExamplesJson = "[]", Notes = "Indicates where an action takes place", RelatedGrammarJson = "[]" },
+                new { GrammarId = 6, Pattern = "が (particle)", Meaning = "subject marker", Structure = "Noun + が + predicate", JLPTLevel = "N5", ExamplesJson = "[]", Notes = "Marks the grammatical subject", RelatedGrammarJson = "[]" }
+            };
+            
+            modelBuilder.Entity<Grammar>().HasData(sampleGrammar);
         }
     }
 }

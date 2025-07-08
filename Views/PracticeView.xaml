@@ -1,0 +1,219 @@
+<UserControl x:Class="JapaneseTracker.Views.PracticeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels">
+    
+    <UserControl.DataContext>
+        <viewModels:PracticeViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <materialDesign:Card Grid.Row="0" 
+                           Padding="24" 
+                           Margin="0,0,0,16"
+                           Background="{StaticResource PrimaryBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Kana Practice" 
+                               FontSize="24" 
+                               FontWeight="Medium"
+                               Foreground="{StaticResource OnPrimaryBrush}"/>
+                    <TextBlock Text="Practice reading Hiragana and Katakana characters" 
+                               FontSize="16" 
+                               Foreground="{StaticResource OnPrimaryBrush}"
+                               Opacity="0.9"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Text="{Binding AccuracyRate, StringFormat='Accuracy: {0:F1}%'}" 
+                               FontSize="16" 
+                               FontWeight="Medium"
+                               Foreground="{StaticResource OnPrimaryBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,16,0"/>
+                    
+                    <TextBlock Text="{Binding CorrectAnswers, StringFormat='{0}'}" 
+                               FontSize="24" 
+                               FontWeight="Bold"
+                               Foreground="{StaticResource OnPrimaryBrush}"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="/" 
+                               FontSize="16" 
+                               Foreground="{StaticResource OnPrimaryBrush}"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalAnswers}" 
+                               FontSize="16" 
+                               Foreground="{StaticResource OnPrimaryBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+        
+        <!-- Controls -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <ComboBox Grid.Column="0" 
+                      ItemsSource="{Binding KanaTypes}"
+                      SelectedItem="{Binding SelectedKanaType}"
+                      Style="{StaticResource MaterialDesignComboBox}"
+                      materialDesign:HintAssist.Hint="Kana Type"
+                      Width="150"
+                      Margin="0,0,16,0"/>
+            
+            <Button Grid.Column="2" 
+                    Content="Start Practice"
+                    Command="{Binding StartPracticeCommand}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Background="{StaticResource SecondaryBrush}"/>
+        </Grid>
+        
+        <!-- Practice Area -->
+        <materialDesign:Card Grid.Row="2" Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Character Display -->
+                <Grid Grid.Row="0">
+                    <StackPanel HorizontalAlignment="Center" 
+                              VerticalAlignment="Center"
+                              Visibility="{Binding CurrentKana, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        
+                        <!-- Kana Character -->
+                        <TextBlock Text="{Binding CurrentKana.Character}" 
+                                   FontSize="120" 
+                                   FontFamily="{StaticResource JapaneseFontFamily}"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource PrimaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,24"/>
+                        
+                        <!-- Answer (shown when revealed) -->
+                        <TextBlock Text="{Binding CurrentKana.Romaji}" 
+                                   FontSize="32" 
+                                   FontWeight="Medium"
+                                   Foreground="{StaticResource SecondaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Visibility="{Binding ShowAnswer, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        
+                        <!-- Input Area -->
+                        <StackPanel Orientation="Horizontal" 
+                                  HorizontalAlignment="Center"
+                                  Margin="0,24,0,0"
+                                  Visibility="{Binding ShowAnswer, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}">
+                            
+                            <TextBox Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                     materialDesign:HintAssist.Hint="Type the romaji"
+                                     FontSize="24"
+                                     Width="200"
+                                     HorizontalAlignment="Center"
+                                     Margin="0,0,16,0"/>
+                            
+                            <Button Content="Check"
+                                    Command="{Binding CheckAnswerCommand}"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Background="{StaticResource SuccessBrush}"
+                                    Margin="0,0,8,0"/>
+                            
+                            <Button Content="Show Answer"
+                                    Command="{Binding ShowAnswerCommand}"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <!-- No Kana Message -->
+                    <StackPanel HorizontalAlignment="Center" 
+                              VerticalAlignment="Center"
+                              Visibility="{Binding CurrentKana, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}">
+                        <materialDesign:PackIcon Kind="School" 
+                                               Width="64" 
+                                               Height="64" 
+                                               Foreground="{StaticResource OnSurfaceBrush}"
+                                               Opacity="0.5"
+                                               HorizontalAlignment="Center"/>
+                        <TextBlock Text="Select a kana type and start practicing!" 
+                                   FontSize="18" 
+                                   Foreground="{StaticResource OnSurfaceBrush}"
+                                   Opacity="0.7"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,16,0,0"/>
+                    </StackPanel>
+                </Grid>
+                
+                <!-- Navigation -->
+                <StackPanel Grid.Row="1" 
+                          Orientation="Horizontal" 
+                          HorizontalAlignment="Center"
+                          Margin="0,24,0,0"
+                          Visibility="{Binding ShowAnswer, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    
+                    <Button Content="Submit & Next"
+                            Command="{Binding SubmitAnswerCommand}"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Background="{StaticResource PrimaryBrush}"
+                            Margin="0,0,8,0"/>
+                    
+                    <Button Content="Next"
+                            Command="{Binding NextKanaCommand}"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                </StackPanel>
+                
+                <!-- Progress -->
+                <Grid Grid.Row="2" Margin="0,24,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <ProgressBar Grid.Column="0" 
+                               Value="{Binding CurrentIndex}" 
+                               Maximum="{Binding KanaCharacters.Count}"
+                               Height="8"
+                               VerticalAlignment="Center"/>
+                    
+                    <TextBlock Grid.Column="1" 
+                             Text="{Binding CurrentIndex, StringFormat='{0}'}"
+                             FontSize="14"
+                             Foreground="{StaticResource OnSurfaceBrush}"
+                             VerticalAlignment="Center"
+                             Margin="16,0,0,0"/>
+                    <TextBlock Grid.Column="1" 
+                             Text="/"
+                             FontSize="14"
+                             Foreground="{StaticResource OnSurfaceBrush}"
+                             VerticalAlignment="Center"
+                             Margin="24,0,0,0"/>
+                    <TextBlock Grid.Column="1" 
+                             Text="{Binding KanaCharacters.Count}"
+                             FontSize="14"
+                             Foreground="{StaticResource OnSurfaceBrush}"
+                             VerticalAlignment="Center"
+                             Margin="32,0,0,0"/>
+                </Grid>
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>
