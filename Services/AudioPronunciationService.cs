@@ -200,9 +200,17 @@ namespace JapaneseTracker.Services
             return cleaned.Trim();
         }
         
-        private int GetHashCode(string text)
+        private string ComputeSHA256Hash(string text)
         {
-            return text?.GetHashCode() ?? 0;
+            if (string.IsNullOrWhiteSpace(text))
+                return string.Empty;
+            
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var bytes = System.Text.Encoding.UTF8.GetBytes(text);
+                var hashBytes = sha256.ComputeHash(bytes);
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+            }
         }
         
         // Alternative method using online TTS service (placeholder for future implementation)
