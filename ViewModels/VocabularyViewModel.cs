@@ -155,6 +155,14 @@ namespace JapaneseTracker.ViewModels
             SelectedVocabulary = vocabulary;
         }
         
+        private async Task SelectVocabularyAsync(Vocabulary? vocabulary)
+        {
+            // TODO Not sure what this method was intended to do
+            SelectedVocabulary = vocabulary;
+            // Perform any additional async operations if needed in the future
+            await Task.CompletedTask;
+        }
+        
         private async Task StudyVocabularyAsync(Vocabulary? vocabulary)
         {
             if (vocabulary == null || CurrentUser == null) return;
