@@ -216,5 +216,41 @@ namespace JapaneseTracker.Services
             
             return stats;
         }
+
+        // Progress data retrieval methods for import/export functionality
+        public async Task<List<KanjiProgress>> GetKanjiProgressByUserAsync(int userId)
+        {
+            return await _context.KanjiProgress
+                .Where(kp => kp.UserId == userId)
+                .Include(kp => kp.Kanji)
+                .OrderBy(kp => kp.KanjiId)
+                .ToListAsync();
+        }
+
+        public async Task<List<VocabularyProgress>> GetVocabularyProgressByUserAsync(int userId)
+        {
+            return await _context.VocabularyProgress
+                .Where(vp => vp.UserId == userId)
+                .Include(vp => vp.Vocabulary)
+                .OrderBy(vp => vp.VocabularyId)
+                .ToListAsync();
+        }
+
+        public async Task<List<GrammarProgress>> GetGrammarProgressByUserAsync(int userId)
+        {
+            return await _context.GrammarProgress
+                .Where(gp => gp.UserId == userId)
+                .Include(gp => gp.Grammar)
+                .OrderBy(gp => gp.GrammarId)
+                .ToListAsync();
+        }
+
+        public async Task<List<StudySession>> GetStudySessionsByUserAsync(int userId)
+        {
+            return await _context.StudySessions
+                .Where(ss => ss.UserId == userId)
+                .OrderByDescending(ss => ss.StartTime)
+                .ToListAsync();
+        }
     }
 }

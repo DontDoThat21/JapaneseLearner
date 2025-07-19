@@ -16,6 +16,25 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto">
     
+    <!-- Keyboard Shortcuts for Navigation and Reviews -->
+    <Window.InputBindings>
+        <KeyBinding Key="F1" Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
+        <KeyBinding Key="F2" Command="{Binding NavigateCommand}" CommandParameter="Kanji" />
+        <KeyBinding Key="F3" Command="{Binding NavigateCommand}" CommandParameter="Vocabulary" />
+        <KeyBinding Key="F4" Command="{Binding NavigateCommand}" CommandParameter="Grammar" />
+        <KeyBinding Key="F5" Command="{Binding NavigateCommand}" CommandParameter="Practice" />
+        <KeyBinding Key="F6" Command="{Binding NavigateCommand}" CommandParameter="JLPT Progress" />
+        <KeyBinding Key="F12" Command="{Binding LoadDataCommand}" />
+        <KeyBinding Key="Escape" Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
+        
+        <!-- Phase 5: Import/Export shortcuts -->
+        <KeyBinding Key="E" Modifiers="Ctrl" Command="{Binding ExportDataCommand}" CommandParameter="csv_kanji" />
+        <KeyBinding Key="I" Modifiers="Ctrl" Command="{Binding ImportDataCommand}" CommandParameter="csv_kanji" />
+        <KeyBinding Key="E" Modifiers="Ctrl+Shift" Command="{Binding ExportDataCommand}" CommandParameter="anki_kanji" />
+        <KeyBinding Key="B" Modifiers="Ctrl" Command="{Binding ExportDataCommand}" CommandParameter="json_backup" />
+        <KeyBinding Key="P" Modifiers="Ctrl+Shift" Command="{Binding ShowPerformanceReportCommand}" />
+    </Window.InputBindings>
+    
     <materialDesign:DialogHost Identifier="MainDialogHost">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>

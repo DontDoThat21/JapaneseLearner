@@ -2,11 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels">
+             xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
+             Focusable="True">
     
     <UserControl.DataContext>
         <viewModels:PracticeViewModel/>
     </UserControl.DataContext>
+    
+    <!-- Keyboard shortcuts for Practice/Review mode -->
+    <UserControl.InputBindings>
+        <KeyBinding Key="Space" Command="{Binding NextKanaCommand}" />
+        <KeyBinding Key="Enter" Command="{Binding SubmitAnswerCommand}" />
+        <KeyBinding Key="Tab" Command="{Binding ShowAnswerCommand}" />
+        <KeyBinding Key="R" Command="{Binding LoadKanaCommand}" />
+        <KeyBinding Key="S" Command="{Binding StartPracticeCommand}" />
+        <KeyBinding Key="H" Command="{Binding ShowAnswerCommand}" />
+    </UserControl.InputBindings>
     
     <Grid Margin="24">
         <Grid.RowDefinitions>
