@@ -18,6 +18,7 @@
     
     <!-- Keyboard Shortcuts for Navigation and Reviews -->
     <Window.InputBindings>
+        <KeyBinding Key="F1" Modifiers="Shift" Command="{Binding ShowKeyboardShortcutsCommand}" />
         <KeyBinding Key="F1" Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
         <KeyBinding Key="F2" Command="{Binding NavigateCommand}" CommandParameter="Kanji" />
         <KeyBinding Key="F3" Command="{Binding NavigateCommand}" CommandParameter="Vocabulary" />

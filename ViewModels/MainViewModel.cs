@@ -38,6 +38,7 @@ namespace JapaneseTracker.ViewModels
             ExportDataCommand = new RelayCommand<string>(async (format) => await ExportDataAsync(format));
             ImportDataCommand = new RelayCommand<string>(async (format) => await ImportDataAsync(format));
             ShowPerformanceReportCommand = new RelayCommand(ShowPerformanceReport);
+            ShowKeyboardShortcutsCommand = new RelayCommand(ShowKeyboardShortcuts);
             
             // Initialize with default user for demo
             _ = InitializeDefaultUserAsync();
@@ -76,6 +77,7 @@ namespace JapaneseTracker.ViewModels
         public ICommand ExportDataCommand { get; }
         public ICommand ImportDataCommand { get; }
         public ICommand ShowPerformanceReportCommand { get; }
+        public ICommand ShowKeyboardShortcutsCommand { get; }
         
         private void Navigate(string? viewName)
         {
@@ -264,6 +266,43 @@ namespace JapaneseTracker.ViewModels
 
             reportWindow.Content = textBox;
             reportWindow.Show();
+        }
+
+        private void ShowKeyboardShortcuts()
+        {
+            var shortcuts = new[]
+            {
+                "F1 - Dashboard",
+                "F2 - Kanji Study", 
+                "F3 - Vocabulary",
+                "F4 - Grammar",
+                "F5 - Practice Mode",
+                "F6 - JLPT Progress",
+                "",
+                "== Practice Mode ==",
+                "Space - Next Card",
+                "Tab - Show Answer", 
+                "Enter - Submit Answer",
+                "H - Show Hint",
+                "R - Reload Cards",
+                "",
+                "== Import/Export ==",
+                "Ctrl+E - Export CSV",
+                "Ctrl+I - Import CSV",
+                "Ctrl+Shift+E - Export to Anki",
+                "Ctrl+B - Backup Progress",
+                "",
+                "== Other ==",
+                "Ctrl+F - Search Kanji",
+                "Ctrl+Shift+P - Performance Report",
+                "F12 - Reload Data", 
+                "Escape - Return to Dashboard"
+            };
+
+            var helpText = string.Join("\n", shortcuts);
+            
+            System.Windows.MessageBox.Show(helpText, "Keyboard Shortcuts", 
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 
         #endregion

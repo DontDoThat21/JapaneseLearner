@@ -11,10 +11,12 @@ namespace JapaneseTracker.Services
     public class DatabaseService
     {
         private readonly AppDbContext _context;
+        private readonly PerformanceMonitoringService? _performanceService;
         
-        public DatabaseService(AppDbContext context)
+        public DatabaseService(AppDbContext context, PerformanceMonitoringService? performanceService = null)
         {
             _context = context;
+            _performanceService = performanceService;
         }
         
         // User operations
@@ -59,6 +61,18 @@ namespace JapaneseTracker.Services
         // Kanji operations
         public async Task<List<Kanji>> GetKanjiByJLPTLevelAsync(string jlptLevel)
         {
+            if (_performanceService != null)
+            {
+                return await _performanceService.MonitorDatabaseQueryAsync("GetKanjiByJLPTLevel", async () =>
+                {
+                    return await _context.Kanji
+                        .Where(k => k.JLPTLevel == jlptLevel)
+                        .OrderBy(k => k.Grade)
+                        .ThenBy(k => k.StrokeCount)
+                        .ToListAsync();
+                });
+            }
+
             return await _context.Kanji
                 .Where(k => k.JLPTLevel == jlptLevel)
                 .OrderBy(k => k.Grade)

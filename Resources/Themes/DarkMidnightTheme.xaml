@@ -231,4 +231,24 @@
         </Style.Triggers>
     </Style>
     
+    <!-- Keyboard Shortcuts Help Resources -->
+    <x:Array x:Key="KeyboardShortcuts" Type="sys:String" xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+        <sys:String>F1 - Dashboard</sys:String>
+        <sys:String>F2 - Kanji Study</sys:String>
+        <sys:String>F3 - Vocabulary</sys:String>
+        <sys:String>F4 - Grammar</sys:String>
+        <sys:String>F5 - Practice Mode</sys:String>
+        <sys:String>F6 - JLPT Progress</sys:String>
+        <sys:String>Space - Next Card (Practice)</sys:String>
+        <sys:String>Tab - Show Answer (Practice)</sys:String>
+        <sys:String>Enter - Submit Answer</sys:String>
+        <sys:String>Ctrl+E - Export Data (CSV)</sys:String>
+        <sys:String>Ctrl+I - Import Data</sys:String>
+        <sys:String>Ctrl+Shift+E - Export to Anki</sys:String>
+        <sys:String>Ctrl+B - Backup Progress</sys:String>
+        <sys:String>Ctrl+Shift+P - Performance Report</sys:String>
+        <sys:String>Ctrl+F - Search Kanji</sys:String>
+        <sys:String>Escape - Return to Dashboard</sys:String>
+    </x:Array>
+    
 </ResourceDictionary>
