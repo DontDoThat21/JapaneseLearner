@@ -22,6 +22,7 @@
             <converters:ViewVisibilityConverter x:Key="ViewVisibilityConverter"/>
             <converters:ViewNotImplementedConverter x:Key="ViewNotImplementedConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:BooleanToVisibilityMultiValueConverter x:Key="MultiValueConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

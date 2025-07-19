@@ -45,8 +45,9 @@
     <SolidColorBrush x:Key="JLPTN2Brush" Color="{StaticResource JLPTN2Color}"/>
     <SolidColorBrush x:Key="JLPTN1Brush" Color="{StaticResource JLPTN1Color}"/>
     
-    <!-- Japanese Font Family -->
-    <FontFamily x:Key="JapaneseFontFamily">Resources/Fonts/NotoSansJP-Regular.otf#Noto Sans JP</FontFamily>
+    <!-- Japanese Font Family with fallback fonts for Japanese characters -->
+    <!-- Uses system fonts that support Japanese: Meiryo UI, MS UI Gothic, Yu Gothic UI, and fallback to system default -->
+    <FontFamily x:Key="JapaneseFontFamily">Meiryo UI, MS UI Gothic, Yu Gothic UI, Microsoft YaHei UI, Segoe UI, Arial Unicode MS</FontFamily>
     
     <!-- Styles -->
     <Style x:Key="JapaneseTextStyle" TargetType="TextBlock">

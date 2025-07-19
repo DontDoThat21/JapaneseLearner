@@ -16,10 +16,6 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto">
     
-    <Window.DataContext>
-        <viewModels:MainViewModel/>
-    </Window.DataContext>
-    
     <materialDesign:DialogHost Identifier="MainDialogHost">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>
@@ -190,12 +186,8 @@
                     <!-- Placeholder for other views -->
                     <StackPanel HorizontalAlignment="Center" 
                               VerticalAlignment="Center"
-                              Opacity="0.6">
-                        <StackPanel.Visibility>
-                            <MultiBinding Converter="{StaticResource BooleanToVisibilityConverter}">
-                                <Binding Path="SelectedView" Converter="{StaticResource ViewNotImplementedConverter}"/>
-                            </MultiBinding>
-                        </StackPanel.Visibility>
+                              Opacity="0.6"
+                              Visibility="{Binding SelectedView, Converter={StaticResource ViewNotImplementedConverter}}">
                         <materialDesign:PackIcon Kind="Construction" 
                                                Width="64" 
                                                Height="64" 

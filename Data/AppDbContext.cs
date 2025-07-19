@@ -25,6 +25,27 @@ namespace JapaneseTracker.Data
         {
             base.OnModelCreating(modelBuilder);
             
+            // Ignore classes that are only used for JSON serialization
+            modelBuilder.Ignore<ExampleSentence>();
+            modelBuilder.Ignore<GrammarExample>();
+            modelBuilder.Ignore<VocabularyExample>();
+            
+            // Ignore computed List<string> properties that are deserialized from JSON fields
+            // These properties should not be mapped to database tables
+            modelBuilder.Entity<Kanji>()
+                .Ignore(k => k.OnReadings)
+                .Ignore(k => k.KunReadings)
+                .Ignore(k => k.Radicals)
+                .Ignore(k => k.ExampleWords);
+            
+            modelBuilder.Entity<Vocabulary>()
+                .Ignore(v => v.ExampleSentences)
+                .Ignore(v => v.RelatedKanji);
+            
+            modelBuilder.Entity<Grammar>()
+                .Ignore(g => g.Examples)
+                .Ignore(g => g.RelatedGrammar);
+            
             // Configure indexes for better performance
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)

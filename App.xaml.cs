@@ -21,7 +21,16 @@ namespace JapaneseTracker
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var builder = Host.CreateDefaultBuilder(e.Args);
+            // Initialize services BEFORE calling base.OnStartup which creates the MainWindow
+            InitializeServices();
+            
+            // Now call base.OnStartup which will create MainWindow using StartupUri
+            base.OnStartup(e);
+        }
+
+        private void InitializeServices()
+        {
+            var builder = Host.CreateDefaultBuilder();
 
             builder.ConfigureAppConfiguration((context, config) =>
             {
@@ -57,14 +66,25 @@ namespace JapaneseTracker
 
             _host = builder.Build();
 
-            // Initialize database
-            using (var scope = _host.Services.CreateScope())
+            // Initialize database with error handling
+            try
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                dbContext.Database.EnsureCreated();
+                using (var scope = _host.Services.CreateScope())
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<App>>();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    
+                    logger.LogInformation("Starting database initialization...");
+                    dbContext.Database.EnsureCreated();
+                    logger.LogInformation("Database initialization completed successfully.");
+                }
             }
-
-            base.OnStartup(e);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Database initialization failed: {ex.Message}", "Database Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                throw;
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -76,8 +96,19 @@ namespace JapaneseTracker
         public static T GetService<T>()
             where T : class
         {
-            return ((App)Current)._host?.Services.GetService(typeof(T)) as T
-                ?? throw new InvalidOperationException($"Service {typeof(T)} not found");
+            var app = Current as App;
+            if (app?._host == null)
+            {
+                throw new InvalidOperationException("Application host is not initialized");
+            }
+
+            var service = app._host.Services.GetService(typeof(T)) as T;
+            if (service == null)
+            {
+                throw new InvalidOperationException($"Service {typeof(T)} not found");
+            }
+
+            return service;
         }
     }
 }

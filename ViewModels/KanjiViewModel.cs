@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JapaneseTracker.Services;
 using JapaneseTracker.Models;
+using JapaneseTracker.Commands;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;

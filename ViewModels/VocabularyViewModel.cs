@@ -1,5 +1,6 @@
 using JapaneseTracker.Services;
 using JapaneseTracker.Models;
+using JapaneseTracker.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Threading.Tasks;
