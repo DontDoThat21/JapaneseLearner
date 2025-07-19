@@ -1,6 +1,8 @@
+using System;
 using JapaneseTracker.Services;
 using JapaneseTracker.Models;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace JapaneseTracker.ViewModels

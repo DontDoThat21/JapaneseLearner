@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using JapaneseTracker.Services;
 using JapaneseTracker.Models;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace JapaneseTracker.ViewModels
 {
