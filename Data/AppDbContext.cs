@@ -21,6 +21,15 @@ namespace JapaneseTracker.Data
         public DbSet<KanaCharacter> KanaCharacters { get; set; } = null!;
         public DbSet<KanaProgress> KanaProgress { get; set; } = null!;
         
+        // Phase 4: Interactive Learning - New DbSets
+        public DbSet<ReviewQueue> ReviewQueue { get; set; } = null!;
+        public DbSet<ReviewSession> ReviewSessions { get; set; } = null!;
+        public DbSet<ReviewResult> ReviewResults { get; set; } = null!;
+        public DbSet<SentenceBuildingExercise> SentenceBuildingExercises { get; set; } = null!;
+        public DbSet<WritingPracticeSession> WritingPracticeSessions { get; set; } = null!;
+        public DbSet<WritingPracticeStroke> WritingPracticeStrokes { get; set; } = null!;
+        public DbSet<PitchAccentPattern> PitchAccentPatterns { get; set; } = null!;
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -29,6 +38,8 @@ namespace JapaneseTracker.Data
             modelBuilder.Ignore<ExampleSentence>();
             modelBuilder.Ignore<GrammarExample>();
             modelBuilder.Ignore<VocabularyExample>();
+            modelBuilder.Ignore<PitchAccentVisualization>();
+            modelBuilder.Ignore<PitchAccentPoint>();
             
             // Ignore computed List<string> properties that are deserialized from JSON fields
             // These properties should not be mapped to database tables
@@ -45,6 +56,10 @@ namespace JapaneseTracker.Data
             modelBuilder.Entity<Grammar>()
                 .Ignore(g => g.Examples)
                 .Ignore(g => g.RelatedGrammar);
+            
+            modelBuilder.Entity<SentenceBuildingExercise>()
+                .Ignore(s => s.WordBank)
+                .Ignore(s => s.Hints);
             
             // Configure indexes for better performance
             modelBuilder.Entity<User>()
@@ -130,6 +145,43 @@ namespace JapaneseTracker.Data
                 .HasOne(kp => kp.KanaCharacter)
                 .WithMany(k => k.ProgressRecords)
                 .HasForeignKey(kp => kp.KanaId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Phase 4: Interactive Learning relationships
+            modelBuilder.Entity<ReviewQueue>()
+                .HasOne(rq => rq.User)
+                .WithMany()
+                .HasForeignKey(rq => rq.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<ReviewSession>()
+                .HasOne(rs => rs.User)
+                .WithMany()
+                .HasForeignKey(rs => rs.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<ReviewResult>()
+                .HasOne(rr => rr.Session)
+                .WithMany(s => s.Results)
+                .HasForeignKey(rr => rr.SessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<ReviewResult>()
+                .HasOne(rr => rr.QueueItem)
+                .WithMany()
+                .HasForeignKey(rr => rr.QueueId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<WritingPracticeStroke>()
+                .HasOne<WritingPracticeSession>()
+                .WithMany(s => s.Strokes)
+                .HasForeignKey(s => s.PracticeSessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<PitchAccentPattern>()
+                .HasOne(p => p.Vocabulary)
+                .WithMany()
+                .HasForeignKey(p => p.VocabularyId)
                 .OnDelete(DeleteBehavior.Cascade);
             
             // Seed initial data
