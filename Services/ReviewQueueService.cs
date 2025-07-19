@@ -214,7 +214,7 @@ namespace JapaneseTracker.Services
             {
                 var context = await _databaseService.GetDbContextAsync();
                 
-                var session = context.ReviewSessions.Find(sessionId);
+                var session = await context.ReviewSessions.FindAsync(sessionId);
                 if (session == null)
                 {
                     _logger.LogWarning($"Review session {sessionId} not found");
