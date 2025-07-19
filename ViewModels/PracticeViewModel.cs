@@ -373,10 +373,12 @@ namespace JapaneseTracker.ViewModels
             if (_pitchAccentService != null && CurrentVocabulary != null)
             {
                 // Determine pattern type from pitch accent value
-                var patternType = _pitchAccentService.DetectPatternType(CurrentVocabulary.PitchAccent, CurrentVocabulary.Reading.Length);
+                var patternType = _pitchAccentService.DetectPatternType(
+                    CurrentVocabulary?.PitchAccent, 
+                    CurrentVocabulary?.Reading?.Length ?? 0);
                 CurrentPitchVisualization = _pitchAccentService.GenerateVisualization(
-                    CurrentVocabulary.Reading, 
-                    CurrentVocabulary.PitchAccent, 
+                    CurrentVocabulary?.Reading, 
+                    CurrentVocabulary?.PitchAccent, 
                     patternType);
             }
         }
