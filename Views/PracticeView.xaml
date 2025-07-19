@@ -46,7 +46,7 @@
                                VerticalAlignment="Center"
                                Margin="0,0,16,0"/>
                     
-                    <TextBlock Text="{Binding CorrectAnswers, StringFormat='{0}'}" 
+                    <TextBlock Text="{Binding CorrectAnswers}" 
                                FontSize="24" 
                                FontWeight="Bold"
                                Foreground="{StaticResource OnPrimaryBrush}"
@@ -121,8 +121,17 @@
                         <!-- Input Area -->
                         <StackPanel Orientation="Horizontal" 
                                   HorizontalAlignment="Center"
-                                  Margin="0,24,0,0"
-                                  Visibility="{Binding ShowAnswer, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}">
+                                  Margin="0,24,0,0">
+                            <StackPanel.Visibility>
+                                <Binding Path="ShowAnswer">
+                                    <Binding.Converter>
+                                        <BooleanToVisibilityConverter/>
+                                    </Binding.Converter>
+                                    <Binding.ConverterParameter>
+                                        <x:Static Member="Visibility.Collapsed"/>
+                                    </Binding.ConverterParameter>
+                                </Binding>
+                            </StackPanel.Visibility>
                             
                             <TextBox Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -146,8 +155,17 @@
                     
                     <!-- No Kana Message -->
                     <StackPanel HorizontalAlignment="Center" 
-                              VerticalAlignment="Center"
-                              Visibility="{Binding CurrentKana, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}">
+                              VerticalAlignment="Center">
+                        <StackPanel.Visibility>
+                            <Binding Path="CurrentKana">
+                                <Binding.Converter>
+                                    <BooleanToVisibilityConverter/>
+                                </Binding.Converter>
+                                <Binding.ConverterParameter>
+                                    <x:Static Member="Visibility.Collapsed"/>
+                                </Binding.ConverterParameter>
+                            </Binding>
+                        </StackPanel.Visibility>
                         <materialDesign:PackIcon Kind="School" 
                                                Width="64" 
                                                Height="64" 
@@ -170,7 +188,7 @@
                           Margin="0,24,0,0"
                           Visibility="{Binding ShowAnswer, Converter={StaticResource BooleanToVisibilityConverter}}">
                     
-                    <Button Content="Submit & Next"
+                    <Button Content="Submit &amp; Next"
                             Command="{Binding SubmitAnswerCommand}"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Background="{StaticResource PrimaryBrush}"
@@ -194,24 +212,18 @@
                                Height="8"
                                VerticalAlignment="Center"/>
                     
-                    <TextBlock Grid.Column="1" 
-                             Text="{Binding CurrentIndex, StringFormat='{0}'}"
-                             FontSize="14"
-                             Foreground="{StaticResource OnSurfaceBrush}"
-                             VerticalAlignment="Center"
-                             Margin="16,0,0,0"/>
-                    <TextBlock Grid.Column="1" 
-                             Text="/"
-                             FontSize="14"
-                             Foreground="{StaticResource OnSurfaceBrush}"
-                             VerticalAlignment="Center"
-                             Margin="24,0,0,0"/>
-                    <TextBlock Grid.Column="1" 
-                             Text="{Binding KanaCharacters.Count}"
-                             FontSize="14"
-                             Foreground="{StaticResource OnSurfaceBrush}"
-                             VerticalAlignment="Center"
-                             Margin="32,0,0,0"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                        <TextBlock Text="{Binding CurrentIndex}" 
+                                 FontSize="14"
+                                 Foreground="{StaticResource OnSurfaceBrush}"/>
+                        <TextBlock Text="/"
+                                 FontSize="14"
+                                 Foreground="{StaticResource OnSurfaceBrush}"
+                                 Margin="2,0,2,0"/>
+                        <TextBlock Text="{Binding KanaCharacters.Count}"
+                                 FontSize="14"
+                                 Foreground="{StaticResource OnSurfaceBrush}"/>
+                    </StackPanel>
                 </Grid>
             </Grid>
         </materialDesign:Card>

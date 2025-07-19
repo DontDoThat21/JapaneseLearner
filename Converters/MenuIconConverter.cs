@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using MaterialDesignThemes.Wpf;
@@ -14,9 +17,9 @@ namespace JapaneseTracker.Converters
                 return menuItem switch
                 {
                     "Dashboard" => PackIconKind.ViewDashboard,
-                    "Kanji" => PackIconKind.Ideogram,
+                    "Kanji" => PackIconKind.Translate,
                     "Vocabulary" => PackIconKind.BookOpenPageVariant,
-                    "Grammar" => PackIconKind.GrammarCheck,
+                    "Grammar" => PackIconKind.Spellcheck,
                     "Practice" => PackIconKind.School,
                     "JLPT Progress" => PackIconKind.TrendingUp,
                     _ => PackIconKind.Circle

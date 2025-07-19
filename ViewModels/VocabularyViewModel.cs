@@ -2,6 +2,10 @@ using JapaneseTracker.Services;
 using JapaneseTracker.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JapaneseTracker.ViewModels
 {
@@ -30,7 +34,7 @@ namespace JapaneseTracker.ViewModels
             
             // Commands
             LoadVocabularyCommand = new RelayCommand(async () => await LoadVocabularyAsync());
-            SelectVocabularyCommand = new RelayCommand<Vocabulary>(SelectVocabulary);
+            SelectVocabularyCommand = new RelayCommand<Vocabulary>(async (vocab) => await SelectVocabularyAsync(vocab));
             StudyVocabularyCommand = new RelayCommand<Vocabulary>(async (vocab) => await StudyVocabularyAsync(vocab));
             SearchVocabularyCommand = new RelayCommand(async () => await SearchVocabularyAsync());
             
