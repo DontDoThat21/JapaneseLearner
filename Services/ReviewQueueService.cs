@@ -140,7 +140,7 @@ namespace JapaneseTracker.Services
             {
                 var context = await _databaseService.GetDbContextAsync();
                 
-                var queueItem = context.ReviewQueue.Find(queueId);
+                var queueItem = await context.ReviewQueue.FindAsync(queueId);
                 if (queueItem == null)
                 {
                     _logger.LogWarning($"Queue item {queueId} not found");
