@@ -68,7 +68,7 @@ namespace JapaneseTracker.Models
                 }
                 else
                 {
-                    var timeUntilReview = NextReviewDate - DateTime.Now;
+                    var timeUntilReview = NextReviewDate - DateTime.UtcNow;
                     if (timeUntilReview.TotalDays > 1)
                         return $"Review in {timeUntilReview.Days} days • {TotalReviews} reviews";
                     else if (timeUntilReview.TotalHours > 1)
