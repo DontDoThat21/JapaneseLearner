@@ -3,7 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
+             xmlns:converters="clr-namespace:JapaneseTracker.Converters"
              Background="Transparent">
+    
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:JLPTLevelToColorConverter x:Key="JLPTLevelToColorConverter"/>
+        <converters:SRSLevelToIconConverter x:Key="SRSLevelToIconConverter"/>
+    </UserControl.Resources>
     
     <UserControl.DataContext>
         <viewModels:VocabularyViewModel/>
@@ -31,10 +38,42 @@
                                Margin="0,0,0,8"/>
                     <TextBlock Text="Build your Japanese vocabulary with context and examples"
                                FontSize="16"
-                               Opacity="0.7"/>
+                               Opacity="0.7"
+                               Margin="0,0,0,12"/>
+                    
+                    <!-- Daily Goal Progress -->
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Target" 
+                                               Width="20" 
+                                               Height="20"
+                                               Foreground="{StaticResource SecondaryBrush}"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,8,0"/>
+                        <TextBlock Text="Daily Goal: 7 of 10 words reviewed" 
+                                   FontSize="14"
+                                   VerticalAlignment="Center"/>
+                        <ProgressBar Value="70" 
+                                     Maximum="100" 
+                                     Width="100"
+                                     Height="6"
+                                     Margin="12,0,0,0"
+                                     Foreground="{StaticResource SecondaryBrush}"/>
+                    </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- Category Filter -->
+                    <ComboBox MinWidth="120"
+                              Margin="0,0,16,0"
+                              materialDesign:HintAssist.Hint="Category">
+                        <ComboBoxItem Content="All Types"/>
+                        <ComboBoxItem Content="Nouns"/>
+                        <ComboBoxItem Content="Verbs"/>
+                        <ComboBoxItem Content="Adjectives"/>
+                        <ComboBoxItem Content="Expressions"/>
+                        <ComboBoxItem Content="Greetings"/>
+                    </ComboBox>
+                    
                     <!-- JLPT Level Filter -->
                     <ComboBox ItemsSource="{Binding JLPTLevels}"
                               SelectedItem="{Binding SelectedJLPTLevel}"
@@ -72,53 +111,97 @@
             </Grid.ColumnDefinitions>
             
             <!-- Total Vocabulary -->
-            <materialDesign:Card Grid.Column="0" Margin="0,0,8,0" Padding="16">
+            <materialDesign:Card Grid.Column="0" Margin="0,0,8,0" Padding="16"
+                                 Style="{StaticResource AnimatedCardStyle}">
                 <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <materialDesign:PackIcon Kind="Book" 
+                                               Width="24" 
+                                               Height="24"
+                                               Foreground="{StaticResource PrimaryBrush}"
+                                               HorizontalAlignment="Center"/>
+                    </Grid>
+                    
                     <TextBlock Text="{Binding VocabularyList.Count, StringFormat='{}Total: {0}'}"
                                FontSize="18"
-                               FontWeight="SemiBold"/>
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Words"
                                FontSize="14"
-                               Opacity="0.7"/>
+                               Opacity="0.7"
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </materialDesign:Card>
             
             <!-- Learned -->
-            <materialDesign:Card Grid.Column="1" Margin="8,0,8,0" Padding="16">
+            <materialDesign:Card Grid.Column="1" Margin="8,0,8,0" Padding="16"
+                                 Style="{StaticResource AnimatedCardStyle}">
                 <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <materialDesign:PackIcon Kind="CheckCircle" 
+                                               Width="24" 
+                                               Height="24"
+                                               Foreground="{StaticResource SuccessBrush}"
+                                               HorizontalAlignment="Center"/>
+                    </Grid>
+                    
                     <TextBlock Text="{Binding LearnedCount, StringFormat='{}Learned: {0}'}"
                                FontSize="18"
                                FontWeight="SemiBold"
-                               Foreground="{StaticResource SuccessBrush}"/>
+                               Foreground="{StaticResource SuccessBrush}"
+                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Words"
                                FontSize="14"
-                               Opacity="0.7"/>
+                               Opacity="0.7"
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </materialDesign:Card>
             
             <!-- Review Due -->
-            <materialDesign:Card Grid.Column="2" Margin="8,0,8,0" Padding="16">
+            <materialDesign:Card Grid.Column="2" Margin="8,0,8,0" Padding="16"
+                                 Style="{StaticResource AnimatedCardStyle}">
                 <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <materialDesign:PackIcon Kind="Clock" 
+                                               Width="24" 
+                                               Height="24"
+                                               Foreground="{StaticResource WarningBrush}"
+                                               HorizontalAlignment="Center"/>
+                    </Grid>
+                    
                     <TextBlock Text="{Binding ReviewDueCount, StringFormat='{}Due: {0}'}"
                                FontSize="18"
                                FontWeight="SemiBold"
-                               Foreground="{StaticResource WarningBrush}"/>
+                               Foreground="{StaticResource WarningBrush}"
+                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Reviews"
                                FontSize="14"
-                               Opacity="0.7"/>
+                               Opacity="0.7"
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </materialDesign:Card>
             
             <!-- Study Streak -->
-            <materialDesign:Card Grid.Column="3" Margin="8,0,0,0" Padding="16">
+            <materialDesign:Card Grid.Column="3" Margin="8,0,0,0" Padding="16"
+                                 Style="{StaticResource AnimatedCardStyle}">
                 <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <materialDesign:PackIcon Kind="Fire" 
+                                               Width="24" 
+                                               Height="24"
+                                               Foreground="{StaticResource SecondaryBrush}"
+                                               HorizontalAlignment="Center"/>
+                    </Grid>
+                    
                     <TextBlock Text="{Binding CurrentUser.StudyStreak, StringFormat='{}Streak: {0}'}"
                                FontSize="18"
                                FontWeight="SemiBold"
-                               Foreground="{StaticResource SecondaryBrush}"/>
+                               Foreground="{StaticResource SecondaryBrush}"
+                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Days"
                                FontSize="14"
-                               Opacity="0.7"/>
+                               Opacity="0.7"
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </materialDesign:Card>
         </Grid>
@@ -157,7 +240,18 @@
                             <DataTemplate>
                                 <Border BorderBrush="{StaticResource DividerBrush}" 
                                         BorderThickness="0,0,0,1" 
-                                        Padding="16,12">
+                                        Padding="16,12"
+                                        Background="Transparent">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -177,19 +271,49 @@
                                             <TextBlock Text="{Binding Meaning}" 
                                                        FontSize="14" 
                                                        Margin="0,2,0,0"/>
-                                            <TextBlock Text="{Binding JLPTLevel}" 
-                                                       FontSize="11" 
-                                                       Foreground="{Binding JLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"
-                                                       Opacity="0.8"/>
+                                            
+                                            <!-- JLPT Level and Mastery Status -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                <Border Background="{Binding JLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"
+                                                        CornerRadius="10"
+                                                        Padding="6,2"
+                                                        Margin="0,0,8,0">
+                                                    <TextBlock Text="{Binding JLPTLevel}" 
+                                                               FontSize="10" 
+                                                               FontWeight="Bold"
+                                                               Foreground="White"/>
+                                                </Border>
+                                                
+                                                <Border Background="{StaticResource SurfaceBrush}"
+                                                        CornerRadius="8"
+                                                        Padding="6,2">
+                                                    <TextBlock Text="{Binding MasteryLevel}" 
+                                                               FontSize="10"
+                                                               Opacity="0.8"/>
+                                                </Border>
+                                            </StackPanel>
                                         </StackPanel>
                                         
-                                        <!-- SRS Level -->
-                                        <materialDesign:PackIcon Grid.Column="1" 
-                                                               Kind="{Binding SRSLevel, Converter={StaticResource SRSLevelToIconConverter}}" 
-                                                               Width="16" 
-                                                               Height="16"
-                                                               VerticalAlignment="Center"
-                                                               Opacity="0.6"/>
+                                        <!-- Progress Indicator -->
+                                        <StackPanel Grid.Column="1" 
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center">
+                                            <!-- SRS Level Icon -->
+                                            <materialDesign:PackIcon Kind="{Binding SRSLevel, Converter={StaticResource SRSLevelToIconConverter}}" 
+                                                                   Width="20" 
+                                                                   Height="20"
+                                                                   HorizontalAlignment="Center"
+                                                                   Opacity="0.7"/>
+                                            
+                                            <!-- Review Status -->
+                                            <TextBlock Text="{Binding ProgressDescription}" 
+                                                       FontSize="9"
+                                                       TextAlignment="Center"
+                                                       Opacity="0.6"
+                                                       MaxWidth="80"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,2,0,0"/>
+                                        </StackPanel>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -280,11 +404,102 @@
                                         <TextBlock Text="JLPT Level" 
                                                    FontWeight="SemiBold" 
                                                    Margin="0,0,0,4"/>
-                                        <TextBlock Text="{Binding SelectedVocabulary.JLPTLevel}" 
-                                                   FontSize="16"
-                                                   Foreground="{Binding SelectedVocabulary.JLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"/>
+                                        <Border Background="{Binding SelectedVocabulary.JLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"
+                                                CornerRadius="12"
+                                                Padding="8,4"
+                                                HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding SelectedVocabulary.JLPTLevel}" 
+                                                       FontSize="14"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
                                     </StackPanel>
                                 </Grid>
+                                
+                                <!-- Progress Information -->
+                                <StackPanel Margin="0,0,0,24" 
+                                            Visibility="{Binding SelectedVocabulary.Progress, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="Learning Progress" 
+                                               FontWeight="SemiBold" 
+                                               FontSize="16" 
+                                               Margin="0,0,0,12"/>
+                                    
+                                    <Border Background="{StaticResource SurfaceBrush}"
+                                            BorderBrush="{StaticResource DividerBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="16">
+                                        <StackPanel>
+                                            <!-- Mastery Level -->
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <materialDesign:PackIcon Grid.Column="0"
+                                                                       Kind="{Binding SelectedVocabulary.SRSLevel, Converter={StaticResource SRSLevelToIconConverter}}" 
+                                                                       Width="20" 
+                                                                       Height="20"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,0,12,0"/>
+                                                
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding SelectedVocabulary.MasteryLevel}"
+                                                               FontWeight="Medium"
+                                                               FontSize="14"/>
+                                                    <TextBlock Text="{Binding SelectedVocabulary.ProgressDescription}"
+                                                               FontSize="12"
+                                                               Opacity="0.7"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            
+                                            <!-- Statistics -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding SelectedVocabulary.CorrectCount}" 
+                                                               FontSize="20"
+                                                               FontWeight="Bold"
+                                                               Foreground="{StaticResource SuccessBrush}"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Correct" 
+                                                               FontSize="11"
+                                                               Opacity="0.7"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding SelectedVocabulary.IncorrectCount}" 
+                                                               FontSize="20"
+                                                               FontWeight="Bold"
+                                                               Foreground="{StaticResource ErrorBrush}"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Incorrect" 
+                                                               FontSize="11"
+                                                               Opacity="0.7"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding SelectedVocabulary.AccuracyRate, StringFormat='{0:F0}%'}" 
+                                                               FontSize="20"
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Accuracy" 
+                                                               FontSize="11"
+                                                               Opacity="0.7"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
                                 
                                 <!-- Part of Speech -->
                                 <StackPanel Margin="0,0,0,24">
@@ -338,22 +553,24 @@
                                 <!-- Action Buttons -->
                                 <StackPanel Orientation="Horizontal" 
                                             HorizontalAlignment="Center"
-                                            Margin="0,24,0,0">
+                                            Margin="0,24,0,24">
                                     <Button Command="{Binding StudyVocabularyCommand}"
                                             CommandParameter="{Binding SelectedVocabulary}"
                                             Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Margin="0,0,16,0">
+                                            Background="{StaticResource SuccessBrush}"
+                                            BorderBrush="{StaticResource SuccessBrush}"
+                                            Margin="0,0,12,0">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="School" 
                                                                    Width="18" 
                                                                    Height="18"
                                                                    Margin="0,0,8,0"/>
-                                            <TextBlock Text="Study"/>
+                                            <TextBlock Text="Study Now"/>
                                         </StackPanel>
                                     </Button>
                                     
                                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                                            Margin="0,0,16,0">
+                                            Margin="0,0,12,0">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="VolumeHigh" 
                                                                    Width="18" 
@@ -373,11 +590,121 @@
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>
+                                
+                                <!-- Quick Practice Section -->
+                                <materialDesign:Card Background="{StaticResource SurfaceBrush}"
+                                                   Margin="0,12,0,0"
+                                                   Padding="20">
+                                    <StackPanel>
+                                        <TextBlock Text="Quick Practice" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="16" 
+                                                   Margin="0,0,0,16"/>
+                                        
+                                        <!-- Practice Type Buttons -->
+                                        <UniformGrid Columns="2" 
+                                                     HorizontalAlignment="Stretch">
+                                            <!-- Reading Practice -->
+                                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Margin="0,0,8,8"
+                                                    Padding="12">
+                                                <StackPanel>
+                                                    <materialDesign:PackIcon Kind="EyeOutline" 
+                                                                           Width="20" 
+                                                                           Height="20"
+                                                                           HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Reading" 
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Button>
+                                            
+                                            <!-- Meaning Practice -->
+                                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Margin="8,0,0,8"
+                                                    Padding="12">
+                                                <StackPanel>
+                                                    <materialDesign:PackIcon Kind="Lightbulb" 
+                                                                           Width="20" 
+                                                                           Height="20"
+                                                                           HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Meaning" 
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Button>
+                                            
+                                            <!-- Writing Practice -->
+                                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Margin="0,0,8,0"
+                                                    Padding="12">
+                                                <StackPanel>
+                                                    <materialDesign:PackIcon Kind="Pencil" 
+                                                                           Width="20" 
+                                                                           Height="20"
+                                                                           HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Writing" 
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Button>
+                                            
+                                            <!-- Listening Practice -->
+                                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Margin="8,0,0,0"
+                                                    Padding="12">
+                                                <StackPanel>
+                                                    <materialDesign:PackIcon Kind="Headphones" 
+                                                                           Width="20" 
+                                                                           Height="20"
+                                                                           HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Listening" 
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </UniformGrid>
+                                    </StackPanel>
+                                </materialDesign:Card>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
             </materialDesign:Card>
+        </Grid>
+        
+        <!-- Floating Action Buttons -->
+        <Grid Grid.Row="2"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Bottom"
+              Margin="0,0,24,24">
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Right">
+                <!-- Quick Review Button -->
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        Background="{StaticResource SuccessBrush}"
+                        BorderBrush="{StaticResource SuccessBrush}"
+                        Margin="0,0,0,16"
+                        ToolTip="Start Quick Review">
+                    <materialDesign:PackIcon Kind="Lightning" 
+                                           Width="24" 
+                                           Height="24"/>
+                </Button>
+                
+                <!-- Add New Word Button -->
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        Background="{StaticResource SecondaryBrush}"
+                        BorderBrush="{StaticResource SecondaryBrush}"
+                        ToolTip="Add Custom Word">
+                    <materialDesign:PackIcon Kind="Plus" 
+                                           Width="20" 
+                                           Height="20"/>
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
