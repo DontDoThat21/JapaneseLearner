@@ -31,7 +31,7 @@ namespace JapaneseTracker.ViewModels
             _databaseService = new DatabaseService(null!);
             _kanjiRadicalService = new KanjiRadicalService();
             _srsService = new SRSCalculationService();
-            _chatGPTService = new ChatGPTJapaneseService(null!);
+            _chatGPTService = new ChatGPTJapaneseService(new MockChatGPTJapaneseService());
             
             // Commands
             LoadKanjiCommand = new RelayCommand(async () => await LoadKanjiAsync());
