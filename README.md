@@ -197,12 +197,12 @@ JapaneseTracker/
 - [x] Add kanji radical search
 - [x] Build practice modes
 
-### Phase 4: Interactive Learning (Week 5)
-- [ ] Add writing practice with canvas
-- [ ] Implement audio pronunciation
-- [ ] Create sentence building exercises
+### Phase 4: Interactive Learning (Week 5) ✅
+- [x] Add writing practice with canvas
+- [x] Implement audio pronunciation
+- [x] Create sentence building exercises
 - [x] Add pitch accent visualization
-- [ ] Build review queue system
+- [x] Build review queue system
 
 ### Phase 5: Polish and Optimization (Week 6)
 - [ ] Refine animations and transitions

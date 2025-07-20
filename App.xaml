@@ -23,6 +23,11 @@
             <converters:ViewNotImplementedConverter x:Key="ViewNotImplementedConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:BooleanToVisibilityMultiValueConverter x:Key="MultiValueConverter"/>
+            
+            <!-- Practice Converters -->
+            <converters:StringVisibilityConverter x:Key="StringVisibilityConverter"/>
+            <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+            <converters:SRSLevelToColorConverter x:Key="SRSLevelToColorConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
