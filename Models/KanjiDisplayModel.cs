@@ -30,7 +30,7 @@ namespace JapaneseTracker.Models
         public int SRSLevel => Progress?.SRSLevel ?? 0;
         public bool IsReviewDue => Progress?.IsReviewDue ?? false;
         public double AccuracyRate => Progress?.AccuracyRate ?? 0;
-        public DateTime NextReviewDate => Progress?.NextReviewDate ?? DateTime.UtcNow;
+        public DateTime NextReviewDate => Progress?.NextReviewDate ?? DateTime.MaxValue;
         public int CorrectCount => Progress?.CorrectCount ?? 0;
         public int IncorrectCount => Progress?.IncorrectCount ?? 0;
         public DateTime LastReviewed => Progress?.LastReviewed ?? DateTime.MinValue;
