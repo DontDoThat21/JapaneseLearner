@@ -668,7 +668,7 @@
                                                            Height="4"
                                                            Width="40"
                                                            Style="{StaticResource MaterialDesignLinearProgressBar}"
-                                                           Foreground="#FF9800"/>
+                                                           Foreground="{StaticResource OrangeBrush}"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
