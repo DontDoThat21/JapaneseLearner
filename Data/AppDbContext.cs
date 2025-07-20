@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using JapaneseTracker.Models;
+using JapaneseTracker.Services;
 
 namespace JapaneseTracker.Data
 {

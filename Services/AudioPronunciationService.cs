@@ -105,7 +105,7 @@ namespace JapaneseTracker.Services
                     return string.Empty;
                 
                 var cleanText = CleanTextForPronunciation(text);
-                var fileName = $"{GetHashCode(cleanText)}_{DateTime.UtcNow.Ticks}.wav";
+                var fileName = $"{ComputeSHA256Hash(cleanText)}_{DateTime.UtcNow.Ticks}.wav";
                 var filePath = Path.Combine(_audioDirectory, fileName);
                 
                 await Task.Run(() =>

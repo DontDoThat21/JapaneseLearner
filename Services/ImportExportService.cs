@@ -38,18 +38,20 @@ namespace JapaneseTracker.Services
 
                 var csv = new StringBuilder();
                 // CSV Header
-                csv.AppendLine("Character,OnReading,KunReading,Meaning,JLPTLevel,StrokeCount,Grade,Frequency");
+                csv.AppendLine("Character,OnReadings,KunReadings,Meaning,JLPTLevel,StrokeCount,Grade");
 
                 foreach (var kanji in kanjiList)
                 {
+                    var onReadingsString = string.Join(";", kanji.OnReadings);
+                    var kunReadingsString = string.Join(";", kanji.KunReadings);
+                    
                     csv.AppendLine($"\"{kanji.Character}\"," +
-                                  $"\"{kanji.OnReading}\"," +
-                                  $"\"{kanji.KunReading}\"," +
+                                  $"\"{onReadingsString}\"," +
+                                  $"\"{kunReadingsString}\"," +
                                   $"\"{kanji.Meaning}\"," +
                                   $"\"{kanji.JLPTLevel}\"," +
                                   $"{kanji.StrokeCount}," +
-                                  $"{kanji.Grade ?? 0}," +
-                                  $"{kanji.Frequency ?? 0}");
+                                  $"{kanji.Grade}");
                 }
 
                 await File.WriteAllTextAsync(filePath, csv.ToString(), Encoding.UTF8);
@@ -74,17 +76,18 @@ namespace JapaneseTracker.Services
 
                 var csv = new StringBuilder();
                 // CSV Header
-                csv.AppendLine("Word,Reading,Meaning,PartOfSpeech,JLPTLevel,Example,ExampleTranslation");
+                csv.AppendLine("Word,Reading,Meaning,PartOfSpeech,JLPTLevel,ExampleSentences");
 
                 foreach (var vocab in vocabularyList)
                 {
+                    var examplesString = string.Join("|", vocab.ExampleSentences.Select(ex => $"{ex.Japanese}~{ex.Reading}~{ex.English}"));
+                    
                     csv.AppendLine($"\"{vocab.Word}\"," +
                                   $"\"{vocab.Reading}\"," +
                                   $"\"{vocab.Meaning}\"," +
                                   $"\"{vocab.PartOfSpeech}\"," +
                                   $"\"{vocab.JLPTLevel}\"," +
-                                  $"\"{vocab.Example}\"," +
-                                  $"\"{vocab.ExampleTranslation}\"");
+                                  $"\"{examplesString}\"");
                 }
 
                 await File.WriteAllTextAsync(filePath, csv.ToString(), Encoding.UTF8);
@@ -124,18 +127,17 @@ namespace JapaneseTracker.Services
                     if (string.IsNullOrEmpty(line)) continue;
 
                     var parts = ParseCsvLine(line);
-                    if (parts.Length >= 8)
+                    if (parts.Length >= 7)
                     {
                         var kanji = new Kanji
                         {
                             Character = parts[0],
-                            OnReading = parts[1],
-                            KunReading = parts[2],
+                            OnReadings = parts[1].Split(';', StringSplitOptions.RemoveEmptyEntries).ToList(),
+                            KunReadings = parts[2].Split(';', StringSplitOptions.RemoveEmptyEntries).ToList(),
                             Meaning = parts[3],
                             JLPTLevel = parts[4],
                             StrokeCount = int.TryParse(parts[5], out int strokes) ? strokes : 0,
-                            Grade = int.TryParse(parts[6], out int grade) ? grade : null,
-                            Frequency = int.TryParse(parts[7], out int freq) ? freq : null
+                            Grade = int.TryParse(parts[6], out int grade) ? grade : 0
                         };
 
                         importedKanji.Add(kanji);
@@ -171,7 +173,10 @@ namespace JapaneseTracker.Services
                 {
                     // Format: Front (Kanji) [TAB] Back (Reading + Meaning)
                     var front = kanji.Character;
-                    var back = $"<b>Readings:</b><br/>On: {kanji.OnReading}<br/>Kun: {kanji.KunReading}<br/><br/>" +
+                    var onReadingsString = string.Join(", ", kanji.OnReadings);
+                    var kunReadingsString = string.Join(", ", kanji.KunReadings);
+                    
+                    var back = $"<b>Readings:</b><br/>On: {onReadingsString}<br/>Kun: {kunReadingsString}<br/><br/>" +
                               $"<b>Meaning:</b><br/>{kanji.Meaning}<br/><br/>" +
                               $"<b>JLPT Level:</b> {kanji.JLPTLevel}<br/>" +
                               $"<b>Stroke Count:</b> {kanji.StrokeCount}";
@@ -210,12 +215,17 @@ namespace JapaneseTracker.Services
                               $"<b>Part of Speech:</b> {vocab.PartOfSpeech}<br/>" +
                               $"<b>JLPT Level:</b> {vocab.JLPTLevel}";
 
-                    if (!string.IsNullOrEmpty(vocab.Example))
+                    if (vocab.ExampleSentences.Any())
                     {
-                        back += $"<br/><br/><b>Example:</b><br/>{vocab.Example}";
-                        if (!string.IsNullOrEmpty(vocab.ExampleTranslation))
+                        back += "<br/><br/><b>Examples:</b><br/>";
+                        foreach (var example in vocab.ExampleSentences.Take(3)) // Limit to 3 examples for readability
                         {
-                            back += $"<br/><i>{vocab.ExampleTranslation}</i>";
+                            back += $"{example.Japanese}<br/>";
+                            if (!string.IsNullOrEmpty(example.Reading))
+                            {
+                                back += $"<i>{example.Reading}</i><br/>";
+                            }
+                            back += $"{example.English}<br/><br/>";
                         }
                     }
 

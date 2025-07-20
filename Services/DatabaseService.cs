@@ -19,6 +19,12 @@ namespace JapaneseTracker.Services
             _performanceService = performanceService;
         }
         
+        // Database context access
+        public async Task<AppDbContext> GetDbContextAsync()
+        {
+            return await Task.FromResult(_context);
+        }
+        
         // User operations
         public async Task<User?> GetUserByIdAsync(int userId)
         {
@@ -246,7 +252,7 @@ namespace JapaneseTracker.Services
             return await _context.VocabularyProgress
                 .Where(vp => vp.UserId == userId)
                 .Include(vp => vp.Vocabulary)
-                .OrderBy(vp => vp.VocabularyId)
+                .OrderBy(vp => vp.VocabId)
                 .ToListAsync();
         }
 

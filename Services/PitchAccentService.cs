@@ -190,7 +190,7 @@ namespace JapaneseTracker.Services
             const int HEIGHT = 100;
             const int MARGIN = 20;
             
-            var pathBuilder = System.Text.StringBuilder();
+            var pathBuilder = new System.Text.StringBuilder();
             pathBuilder.Append("M ");
             
             for (int i = 0; i < pitchPoints.Count; i++)

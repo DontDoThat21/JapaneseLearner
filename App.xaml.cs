@@ -55,6 +55,8 @@ namespace JapaneseTracker
                 services.AddSingleton<KanjiRadicalService>();
                 services.AddSingleton<ImportExportService>();
                 services.AddSingleton<PerformanceMonitoringService>();
+                services.AddSingleton<ReviewQueueService>();
+                services.AddSingleton<IReviewQueueService>(provider => provider.GetRequiredService<ReviewQueueService>());
 
                 // ViewModels
                 services.AddTransient<MainViewModel>();

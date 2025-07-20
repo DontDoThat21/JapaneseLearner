@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.GC;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 

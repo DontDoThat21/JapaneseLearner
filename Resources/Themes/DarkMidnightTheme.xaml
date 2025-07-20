@@ -155,7 +155,10 @@
     <Style x:Key="AnimatedCardStyle" TargetType="materialDesign:Card" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
         <Setter Property="RenderTransform">
             <Setter.Value>
-                <CompositeTransform />
+                <TransformGroup>
+                    <ScaleTransform />
+                    <TranslateTransform />
+                </TransformGroup>
             </Setter.Value>
         </Setter>
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
@@ -163,13 +166,13 @@
             <EventTrigger RoutedEvent="MouseEnter">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleX)"
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
                                          To="1.05" Duration="0:0:0.2">
                             <DoubleAnimation.EasingFunction>
                                 <QuadraticEase EasingMode="EaseOut"/>
                             </DoubleAnimation.EasingFunction>
                         </DoubleAnimation>
-                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleY)"
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
                                          To="1.05" Duration="0:0:0.2">
                             <DoubleAnimation.EasingFunction>
                                 <QuadraticEase EasingMode="EaseOut"/>
@@ -181,13 +184,13 @@
             <EventTrigger RoutedEvent="MouseLeave">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleX)"
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
                                          To="1.0" Duration="0:0:0.2">
                             <DoubleAnimation.EasingFunction>
                                 <QuadraticEase EasingMode="EaseOut"/>
                             </DoubleAnimation.EasingFunction>
                         </DoubleAnimation>
-                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleY)"
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
                                          To="1.0" Duration="0:0:0.2">
                             <DoubleAnimation.EasingFunction>
                                 <QuadraticEase EasingMode="EaseOut"/>
