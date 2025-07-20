@@ -24,7 +24,9 @@ namespace JapaneseTracker.Converters
                 
                 return $"{dashLength},{gapLength}";
             }
-            return "0,251"; // Default for 0%
+            double radius = 32;
+            double circumference = 2 * Math.PI * radius;
+            return $"0,{circumference}"; // Default for 0%
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
