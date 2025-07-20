@@ -8,6 +8,7 @@
     
     <UserControl.Resources>
         <converters:JLPTLevelToColorConverter x:Key="JLPTLevelToColorConverter"/>
+        <converters:PercentToCircleConverter x:Key="PercentToCircleConverter"/>
     </UserControl.Resources>
     
     <UserControl.DataContext>
