@@ -225,7 +225,7 @@
                                            Opacity="0.3"/>
                                     
                                     <Ellipse Fill="Transparent"
-                                           Stroke="{StaticResource GrammarProgressBrush}"
+                                           Stroke="{StaticResource WarningBrush}"
                                            StrokeThickness="8"
                                            StrokeDashArray="{Binding GrammarProgress, Converter={StaticResource PercentToCircleConverter}}"
                                            StrokeDashOffset="75"
