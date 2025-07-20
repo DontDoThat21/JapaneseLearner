@@ -41,7 +41,7 @@
                                    FontSize="28" 
                                    FontWeight="Bold"
                                    Foreground="{StaticResource OnPrimaryBrush}"/>
-                        <TextBlock Text="{Binding User.Username, StringFormat='Hello {0}! Ready to continue your Japanese learning journey?', FallbackValue='Hello! Ready to start your Japanese learning journey?'}"
+                        <TextBlock Text="{Binding User.Username, StringFormat=Hello {0}! Ready to continue your Japanese learning journey?, FallbackValue=Hello! Ready to start your Japanese learning journey?}"
                                    FontSize="16" 
                                    Margin="0,8,0,0"
                                    Foreground="{StaticResource OnPrimaryBrush}"
@@ -89,7 +89,7 @@
                                                        Foreground="White"
                                                        VerticalAlignment="Center"
                                                        Margin="0,0,4,0"/>
-                                <TextBlock Text="{Binding User.CurrentJLPTLevel, StringFormat='Current Level: {0}'}" 
+                                <TextBlock Text="{Binding User.CurrentJLPTLevel, StringFormat=Current Level: {0}}" 
                                          FontWeight="Medium"
                                          Foreground="White"
                                          FontSize="12"/>
@@ -123,7 +123,7 @@
                                    Style="{StaticResource AnimatedCardStyle}">
                     <StackPanel>
                         <Grid Margin="0,0,0,12">
-                            <materialDesign:PackIcon Kind="Ideogram" 
+                            <materialDesign:PackIcon Kind="Translate" 
                                                    Width="36" 
                                                    Height="36"
                                                    Foreground="{StaticResource JLPTN3Brush}"
@@ -155,7 +155,7 @@
                                      Height="4" 
                                      Background="{StaticResource SurfaceBrush}"
                                      Foreground="{StaticResource JLPTN3Brush}"/>
-                        <TextBlock Text="{Binding N4ProgressPercentage, StringFormat='N4 Progress: {0}%'}" 
+                        <TextBlock Text="{Binding N4ProgressPercentage, StringFormat=N4 Progress: {0}%}" 
                                    FontSize="10" 
                                    HorizontalAlignment="Center"
                                    Opacity="0.7"
@@ -202,7 +202,7 @@
                                      Height="4" 
                                      Background="{StaticResource SurfaceBrush}"
                                      Foreground="{StaticResource JLPTN4Brush}"/>
-                        <TextBlock Text="{Binding VocabularyProgressPercentage, StringFormat='N4 Progress: {0}%'}" 
+                        <TextBlock Text="{Binding VocabularyProgressPercentage, StringFormat=N4 Progress: {0}%}" 
                                    FontSize="10" 
                                    HorizontalAlignment="Center"
                                    Opacity="0.7"
@@ -249,7 +249,7 @@
                                      Height="4" 
                                      Background="{StaticResource SurfaceBrush}"
                                      Foreground="{StaticResource JLPTN2Brush}"/>
-                        <TextBlock Text="{Binding GrammarProgress, StringFormat='N4 Progress: {0}%'}" 
+                        <TextBlock Text="{Binding GrammarProgress, StringFormat=N4 Progress: {0}%}" 
                                    FontSize="10" 
                                    HorizontalAlignment="Center"
                                    Opacity="0.7"
@@ -378,15 +378,15 @@
                                                 
                                                 <!-- Requirements -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                                    <TextBlock Text="{Binding RequiredKanji, StringFormat='{0} Kanji'}" 
+                                                    <TextBlock Text="{Binding RequiredKanji, StringFormat={}{0} Kanji}" 
                                                              FontSize="11" 
                                                              Opacity="0.6"
                                                              Margin="0,0,16,0"/>
-                                                    <TextBlock Text="{Binding RequiredVocabulary, StringFormat='{0} Vocab'}" 
+                                                    <TextBlock Text="{Binding RequiredVocabulary, StringFormat={}{0} Vocab}" 
                                                              FontSize="11" 
                                                              Opacity="0.6"
                                                              Margin="0,0,16,0"/>
-                                                    <TextBlock Text="{Binding RequiredGrammar, StringFormat='{0} Grammar'}" 
+                                                    <TextBlock Text="{Binding RequiredGrammar, StringFormat={}{0} Grammar}" 
                                                              FontSize="11" 
                                                              Opacity="0.6"/>
                                                 </StackPanel>
@@ -470,48 +470,39 @@
                                      FontWeight="Medium"
                                      Margin="0,0,0,16"/>
                             
-                            <Button Content="Start Review Session"
-                                    Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                            <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
                                     Margin="0,0,0,12"
                                     Padding="16,12">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="Play" 
-                                                               Width="18" 
-                                                               Height="18"
-                                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Start Reviews"/>
-                                    </StackPanel>
-                                </Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Play" 
+                                                           Width="18" 
+                                                           Height="18"
+                                                           Margin="0,0,8,0"/>
+                                    <TextBlock Text="Start Reviews"/>
+                                </StackPanel>
                             </Button>
                             
-                            <Button Content="Practice Kanji"
-                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Margin="0,0,0,12"
                                     Padding="16,12">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="Ideogram" 
-                                                               Width="18" 
-                                                               Height="18"
-                                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Practice Kanji"/>
-                                    </StackPanel>
-                                </Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Translate" 
+                                                           Width="18" 
+                                                           Height="18"
+                                                           Margin="0,0,8,0"/>
+                                    <TextBlock Text="Practice Kanji"/>
+                                </StackPanel>
                             </Button>
                             
-                            <Button Content="Study Grammar"
-                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Padding="16,12">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="FormatListBulleted" 
-                                                               Width="18" 
-                                                               Height="18"
-                                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Study Grammar"/>
-                                    </StackPanel>
-                                </Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FormatListBulleted" 
+                                                           Width="18" 
+                                                           Height="18"
+                                                           Margin="0,0,8,0"/>
+                                    <TextBlock Text="Study Grammar"/>
+                                </StackPanel>
                             </Button>
                         </StackPanel>
                     </materialDesign:Card>
