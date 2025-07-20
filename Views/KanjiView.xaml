@@ -230,7 +230,7 @@
                     <ScrollViewer Grid.Row="1" Padding="24">
                         <StackPanel>
                             <!-- No Selection Message -->
-                            <StackPanel Visibility="{Binding SelectedKanji, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}"
+                            <StackPanel Visibility="{Binding SelectedKanji, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
                                 <materialDesign:PackIcon Kind="SelectionSearch" 

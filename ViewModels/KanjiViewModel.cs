@@ -17,14 +17,32 @@ namespace JapaneseTracker.ViewModels
         private readonly SRSCalculationService _srsService;
         private readonly ChatGPTJapaneseService _chatGPTService;
         
-        private ObservableCollection<Kanji> _kanjiList = new();
-        private ObservableCollection<KanjiProgress> _kanjiProgress = new();
-        private Kanji? _selectedKanji;
+        private ObservableCollection<KanjiDisplayModel> _kanjiList = new();
+        private KanjiDisplayModel? _selectedKanji;
         private string _selectedJLPTLevel = "N5";
         private string _searchText = "";
         private bool _isLoading = false;
         private User? _currentUser;
         
+        // Parameterless constructor for XAML design-time support
+        public KanjiViewModel()
+        {
+            // Initialize with default services for design-time
+            _databaseService = new DatabaseService(null!);
+            _kanjiRadicalService = new KanjiRadicalService();
+            _srsService = new SRSCalculationService();
+            _chatGPTService = new ChatGPTJapaneseService(new MockChatGPTJapaneseService());
+            
+            // Commands
+            LoadKanjiCommand = new RelayCommand(async () => await LoadKanjiAsync());
+            SelectKanjiCommand = new RelayCommand<KanjiDisplayModel>(SelectKanji);
+            StudyKanjiCommand = new RelayCommand<KanjiDisplayModel>(async (kanji) => await StudyKanjiAsync(kanji));
+            GetMnemonicCommand = new RelayCommand<KanjiDisplayModel>(async (kanji) => await GetMnemonicAsync(kanji));
+            SearchKanjiCommand = new RelayCommand(async () => await SearchKanjiAsync());
+            
+            JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
+        }
+
         public KanjiViewModel(
             DatabaseService databaseService,
             KanjiRadicalService kanjiRadicalService,
@@ -38,9 +56,9 @@ namespace JapaneseTracker.ViewModels
             
             // Commands
             LoadKanjiCommand = new RelayCommand(async () => await LoadKanjiAsync());
-            SelectKanjiCommand = new RelayCommand<Kanji>(SelectKanji);
-            StudyKanjiCommand = new RelayCommand<Kanji>(async (kanji) => await StudyKanjiAsync(kanji));
-            GetMnemonicCommand = new RelayCommand<Kanji>(async (kanji) => await GetMnemonicAsync(kanji));
+            SelectKanjiCommand = new RelayCommand<KanjiDisplayModel>(SelectKanji);
+            StudyKanjiCommand = new RelayCommand<KanjiDisplayModel>(async (kanji) => await StudyKanjiAsync(kanji));
+            GetMnemonicCommand = new RelayCommand<KanjiDisplayModel>(async (kanji) => await GetMnemonicAsync(kanji));
             SearchKanjiCommand = new RelayCommand(async () => await SearchKanjiAsync());
             
             JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
@@ -49,19 +67,21 @@ namespace JapaneseTracker.ViewModels
             _ = InitializeAsync();
         }
         
-        public ObservableCollection<Kanji> KanjiList
+        public ObservableCollection<KanjiDisplayModel> KanjiList
         {
             get => _kanjiList;
-            set => SetProperty(ref _kanjiList, value);
+            set 
+            { 
+                if (SetProperty(ref _kanjiList, value))
+                {
+                    OnPropertyChanged(nameof(TotalKanjiCount));
+                    OnPropertyChanged(nameof(LearnedCount));
+                    OnPropertyChanged(nameof(ReviewDueCount));
+                }
+            }
         }
         
-        public ObservableCollection<KanjiProgress> KanjiProgress
-        {
-            get => _kanjiProgress;
-            set => SetProperty(ref _kanjiProgress, value);
-        }
-        
-        public Kanji? SelectedKanji
+        public KanjiDisplayModel? SelectedKanji
         {
             get => _selectedKanji;
             set => SetProperty(ref _selectedKanji, value);
@@ -105,13 +125,18 @@ namespace JapaneseTracker.ViewModels
         public ICommand GetMnemonicCommand { get; }
         public ICommand SearchKanjiCommand { get; }
         
+        // Computed Properties
+        private const int LearnedSRSLevelThreshold = 2;
+        public int LearnedCount => KanjiList.Count(k => k.SRSLevel > LearnedSRSLevelThreshold);
+        public int ReviewDueCount => KanjiList.Count(k => k.IsReviewDue);
+        public int TotalKanjiCount => KanjiList.Count;
+        
         private async Task InitializeAsync()
         {
             CurrentUser = await _databaseService.GetUserByUsernameAsync("DefaultUser");
             if (CurrentUser != null)
             {
                 await LoadKanjiAsync();
-                await LoadKanjiProgressAsync();
             }
         }
         
@@ -121,7 +146,17 @@ namespace JapaneseTracker.ViewModels
             try
             {
                 var kanjiList = await _databaseService.GetKanjiByJLPTLevelAsync(SelectedJLPTLevel);
-                KanjiList = new ObservableCollection<Kanji>(kanjiList);
+                var displayModels = new List<KanjiDisplayModel>();
+                
+                foreach (var kanji in kanjiList)
+                {
+                    var progress = CurrentUser != null 
+                        ? await _databaseService.GetKanjiProgressAsync(CurrentUser.UserId, kanji.KanjiId)
+                        : null;
+                    displayModels.Add(new KanjiDisplayModel(kanji, progress));
+                }
+                
+                KanjiList = new ObservableCollection<KanjiDisplayModel>(displayModels);
             }
             catch (Exception ex)
             {
@@ -133,37 +168,16 @@ namespace JapaneseTracker.ViewModels
             }
         }
         
-        private async Task LoadKanjiProgressAsync()
-        {
-            if (CurrentUser == null) return;
-            
-            try
-            {
-                var progressList = new List<KanjiProgress>();
-                foreach (var kanji in KanjiList)
-                {
-                    var progress = await _databaseService.GetKanjiProgressAsync(CurrentUser.UserId, kanji.KanjiId);
-                    if (progress != null)
-                    {
-                        progressList.Add(progress);
-                    }
-                }
-                KanjiProgress = new ObservableCollection<KanjiProgress>(progressList);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error loading kanji progress: {ex.Message}");
-            }
-        }
-        
-        private void SelectKanji(Kanji? kanji)
+        private void SelectKanji(KanjiDisplayModel? kanji)
         {
             SelectedKanji = kanji;
         }
         
-        private async Task StudyKanjiAsync(Kanji? kanji)
+        private async Task StudyKanjiAsync(KanjiDisplayModel? kanjiDisplayModel)
         {
-            if (kanji == null || CurrentUser == null) return;
+            if (kanjiDisplayModel == null || CurrentUser == null) return;
+            
+            var kanji = kanjiDisplayModel.Kanji;
             
             try
             {
@@ -194,7 +208,13 @@ namespace JapaneseTracker.ViewModels
                     progress.IncorrectCount++;
                 
                 await _databaseService.UpdateKanjiProgressAsync(progress);
-                await LoadKanjiProgressAsync();
+                
+                // Update the display model
+                kanjiDisplayModel.Progress = progress;
+                
+                // Refresh the list to update computed properties
+                OnPropertyChanged(nameof(LearnedCount));
+                OnPropertyChanged(nameof(ReviewDueCount));
             }
             catch (Exception ex)
             {
@@ -202,9 +222,11 @@ namespace JapaneseTracker.ViewModels
             }
         }
         
-        private async Task GetMnemonicAsync(Kanji? kanji)
+        private async Task GetMnemonicAsync(KanjiDisplayModel? kanjiDisplayModel)
         {
-            if (kanji == null) return;
+            if (kanjiDisplayModel == null) return;
+            
+            var kanji = kanjiDisplayModel.Kanji;
             
             try
             {
@@ -233,7 +255,17 @@ namespace JapaneseTracker.ViewModels
                     k.KunReadings.Any(r => r.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
                 ).ToList();
                 
-                KanjiList = new ObservableCollection<Kanji>(filteredKanji);
+                var displayModels = new List<KanjiDisplayModel>();
+                
+                foreach (var kanji in filteredKanji)
+                {
+                    var progress = CurrentUser != null 
+                        ? await _databaseService.GetKanjiProgressAsync(CurrentUser.UserId, kanji.KanjiId)
+                        : null;
+                    displayModels.Add(new KanjiDisplayModel(kanji, progress));
+                }
+                
+                KanjiList = new ObservableCollection<KanjiDisplayModel>(displayModels);
             }
             catch (Exception ex)
             {
@@ -247,7 +279,7 @@ namespace JapaneseTracker.ViewModels
         
         public KanjiProgress? GetKanjiProgress(int kanjiId)
         {
-            return KanjiProgress.FirstOrDefault(kp => kp.KanjiId == kanjiId);
+            return KanjiList.FirstOrDefault(k => k.KanjiId == kanjiId)?.Progress;
         }
         
         public string GetKanjiMasteryLevel(int kanjiId)
@@ -256,6 +288,12 @@ namespace JapaneseTracker.ViewModels
             if (progress == null) return "New";
             
             return _srsService.GetMasteryLevel(progress.SRSLevel, progress.AccuracyRate);
+        }
+        
+        public int GetKanjiSRSLevel(int kanjiId)
+        {
+            var progress = GetKanjiProgress(kanjiId);
+            return progress?.SRSLevel ?? 0;
         }
     }
 }

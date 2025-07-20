@@ -38,6 +38,9 @@
     <SolidColorBrush x:Key="OnBackgroundBrush" Color="{StaticResource OnBackgroundColor}"/>
     <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
     
+    <!-- Additional brushes -->
+    <SolidColorBrush x:Key="DividerBrush" Color="#2A2A2A"/>
+    
     <!-- JLPT Level Brushes -->
     <SolidColorBrush x:Key="JLPTN5Brush" Color="{StaticResource JLPTN5Color}"/>
     <SolidColorBrush x:Key="JLPTN4Brush" Color="{StaticResource JLPTN4Color}"/>

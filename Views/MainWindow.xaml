@@ -199,6 +199,10 @@
                         <views:DashboardView/>
                     </Grid>
                     
+                    <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Kanji'}">
+                        <views:KanjiView/>
+                    </Grid>
+                    
                     <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Practice'}">
                         <views:PracticeView/>
                     </Grid>
