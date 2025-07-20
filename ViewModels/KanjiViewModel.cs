@@ -126,7 +126,8 @@ namespace JapaneseTracker.ViewModels
         public ICommand SearchKanjiCommand { get; }
         
         // Computed Properties
-        public int LearnedCount => KanjiList.Count(k => k.SRSLevel > 2);
+        private const int LearnedSRSLevelThreshold = 2;
+        public int LearnedCount => KanjiList.Count(k => k.SRSLevel > LearnedSRSLevelThreshold);
         public int ReviewDueCount => KanjiList.Count(k => k.IsReviewDue);
         public int TotalKanjiCount => KanjiList.Count;
         
