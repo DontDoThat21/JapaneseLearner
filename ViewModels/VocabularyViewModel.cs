@@ -214,7 +214,7 @@ namespace JapaneseTracker.ViewModels
             }
         }
         
-        private void SelectVocabulary(Vocabulary? vocabulary)
+        private void SelectVocabulary(VocabularyDisplayModel? vocabulary)
         {
             SelectedVocabulary = vocabulary;
         }
