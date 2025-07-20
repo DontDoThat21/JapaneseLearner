@@ -53,6 +53,8 @@ namespace JapaneseTracker
                 services.AddSingleton<SRSCalculationService>();
                 services.AddSingleton<JLPTService>();
                 services.AddSingleton<KanjiRadicalService>();
+                services.AddSingleton<ImportExportService>();
+                services.AddSingleton<PerformanceMonitoringService>();
 
                 // ViewModels
                 services.AddTransient<MainViewModel>();

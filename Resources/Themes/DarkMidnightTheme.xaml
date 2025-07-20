@@ -69,4 +69,186 @@
         <Setter Property="Opacity" Value="0.8"/>
     </Style>
     
+    <!-- Animation Resources -->
+    <!-- Smooth fade in animation -->
+    <Storyboard x:Key="FadeInAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0" To="1" 
+                         Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Smooth fade out animation -->
+    <Storyboard x:Key="FadeOutAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="1" To="0" 
+                         Duration="0:0:0.2">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseIn"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Scale up animation for card reveals -->
+    <Storyboard x:Key="ScaleUpAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                         From="0.9" To="1.0" 
+                         Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                         From="0.9" To="1.0" 
+                         Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0" To="1" 
+                         Duration="0:0:0.3"/>
+    </Storyboard>
+    
+    <!-- Slide in from right animation -->
+    <Storyboard x:Key="SlideInFromRightAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.X)"
+                         From="50" To="0" 
+                         Duration="0:0:0.4">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0" To="1" 
+                         Duration="0:0:0.4"/>
+    </Storyboard>
+    
+    <!-- Slide in from left animation -->
+    <Storyboard x:Key="SlideInFromLeftAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.X)"
+                         From="-50" To="0" 
+                         Duration="0:0:0.4">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0" To="1" 
+                         Duration="0:0:0.4"/>
+    </Storyboard>
+    
+    <!-- Progress bar animation -->
+    <Storyboard x:Key="ProgressAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Value"
+                         Duration="0:0:1.5">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Enhanced Card Style with Hover Animations -->
+    <Style x:Key="AnimatedCardStyle" TargetType="materialDesign:Card" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <CompositeTransform />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleX)"
+                                         To="1.05" Duration="0:0:0.2">
+                            <DoubleAnimation.EasingFunction>
+                                <QuadraticEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleY)"
+                                         To="1.05" Duration="0:0:0.2">
+                            <DoubleAnimation.EasingFunction>
+                                <QuadraticEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleX)"
+                                         To="1.0" Duration="0:0:0.2">
+                            <DoubleAnimation.EasingFunction>
+                                <QuadraticEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(CompositeTransform.ScaleY)"
+                                         To="1.0" Duration="0:0:0.2">
+                            <DoubleAnimation.EasingFunction>
+                                <QuadraticEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- Enhanced Button Style with Ripple Effect -->
+    <Style x:Key="AnimatedButtonStyle" TargetType="Button">
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                         To="0.95" Duration="0:0:0.1"/>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                         To="0.95" Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="PreviewMouseLeftButtonUp">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                         To="1.0" Duration="0:0:0.1"/>
+                        <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                         To="1.0" Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- Keyboard Shortcuts Help Resources -->
+    <x:Array x:Key="KeyboardShortcuts" Type="sys:String" xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+        <sys:String>F1 - Dashboard</sys:String>
+        <sys:String>F2 - Kanji Study</sys:String>
+        <sys:String>F3 - Vocabulary</sys:String>
+        <sys:String>F4 - Grammar</sys:String>
+        <sys:String>F5 - Practice Mode</sys:String>
+        <sys:String>F6 - JLPT Progress</sys:String>
+        <sys:String>Space - Next Card (Practice)</sys:String>
+        <sys:String>Tab - Show Answer (Practice)</sys:String>
+        <sys:String>Enter - Submit Answer</sys:String>
+        <sys:String>Ctrl+E - Export Data (CSV)</sys:String>
+        <sys:String>Ctrl+I - Import Data</sys:String>
+        <sys:String>Ctrl+Shift+E - Export to Anki</sys:String>
+        <sys:String>Ctrl+B - Backup Progress</sys:String>
+        <sys:String>Ctrl+Shift+P - Performance Report</sys:String>
+        <sys:String>Ctrl+F - Search Kanji</sys:String>
+        <sys:String>Escape - Return to Dashboard</sys:String>
+    </x:Array>
+    
 </ResourceDictionary>

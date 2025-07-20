@@ -11,10 +11,12 @@ namespace JapaneseTracker.Services
     public class DatabaseService
     {
         private readonly AppDbContext _context;
+        private readonly PerformanceMonitoringService? _performanceService;
         
-        public DatabaseService(AppDbContext context)
+        public DatabaseService(AppDbContext context, PerformanceMonitoringService? performanceService = null)
         {
             _context = context;
+            _performanceService = performanceService;
         }
         
         // User operations
@@ -59,6 +61,18 @@ namespace JapaneseTracker.Services
         // Kanji operations
         public async Task<List<Kanji>> GetKanjiByJLPTLevelAsync(string jlptLevel)
         {
+            if (_performanceService != null)
+            {
+                return await _performanceService.MonitorDatabaseQueryAsync("GetKanjiByJLPTLevel", async () =>
+                {
+                    return await _context.Kanji
+                        .Where(k => k.JLPTLevel == jlptLevel)
+                        .OrderBy(k => k.Grade)
+                        .ThenBy(k => k.StrokeCount)
+                        .ToListAsync();
+                });
+            }
+
             return await _context.Kanji
                 .Where(k => k.JLPTLevel == jlptLevel)
                 .OrderBy(k => k.Grade)
@@ -215,6 +229,42 @@ namespace JapaneseTracker.Services
                 .CountAsync(gp => gp.UserId == userId && gp.UnderstandingLevel > 0);
             
             return stats;
+        }
+
+        // Progress data retrieval methods for import/export functionality
+        public async Task<List<KanjiProgress>> GetKanjiProgressByUserAsync(int userId)
+        {
+            return await _context.KanjiProgress
+                .Where(kp => kp.UserId == userId)
+                .Include(kp => kp.Kanji)
+                .OrderBy(kp => kp.KanjiId)
+                .ToListAsync();
+        }
+
+        public async Task<List<VocabularyProgress>> GetVocabularyProgressByUserAsync(int userId)
+        {
+            return await _context.VocabularyProgress
+                .Where(vp => vp.UserId == userId)
+                .Include(vp => vp.Vocabulary)
+                .OrderBy(vp => vp.VocabularyId)
+                .ToListAsync();
+        }
+
+        public async Task<List<GrammarProgress>> GetGrammarProgressByUserAsync(int userId)
+        {
+            return await _context.GrammarProgress
+                .Where(gp => gp.UserId == userId)
+                .Include(gp => gp.Grammar)
+                .OrderBy(gp => gp.GrammarId)
+                .ToListAsync();
+        }
+
+        public async Task<List<StudySession>> GetStudySessionsByUserAsync(int userId)
+        {
+            return await _context.StudySessions
+                .Where(ss => ss.UserId == userId)
+                .OrderByDescending(ss => ss.StartTime)
+                .ToListAsync();
         }
     }
 }
