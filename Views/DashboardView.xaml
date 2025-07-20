@@ -244,12 +244,12 @@
                                    Margin="0,0,0,8"/>
                         
                         <!-- Progress Bar -->
-                        <ProgressBar Value="56.3" 
+                        <ProgressBar Value="{Binding GrammarProgress}" 
                                      Maximum="100" 
                                      Height="4" 
                                      Background="{StaticResource SurfaceBrush}"
                                      Foreground="{StaticResource JLPTN2Brush}"/>
-                        <TextBlock Text="N4 Progress: 56%" 
+                        <TextBlock Text="{Binding GrammarProgress, StringFormat='N4 Progress: {0}%'}" 
                                    FontSize="10" 
                                    HorizontalAlignment="Center"
                                    Opacity="0.7"
