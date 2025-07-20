@@ -33,6 +33,6 @@ namespace JapaneseTracker.Models
         public DateTime NextReviewDate => Progress?.NextReviewDate ?? DateTime.UtcNow;
         public int CorrectCount => Progress?.CorrectCount ?? 0;
         public int IncorrectCount => Progress?.IncorrectCount ?? 0;
-        public DateTime LastReviewed => Progress?.LastReviewed ?? DateTime.UtcNow;
+        public DateTime LastReviewed => Progress?.LastReviewed ?? DateTime.MinValue;
     }
 }
