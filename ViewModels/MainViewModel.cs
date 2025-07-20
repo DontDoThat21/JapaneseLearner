@@ -33,6 +33,9 @@ namespace JapaneseTracker.ViewModels
             _importExportService = importExportService;
             _performanceMonitoringService = performanceMonitoringService;
             
+            // Create DashboardViewModel with injected dependencies
+            DashboardViewModel = new DashboardViewModel(databaseService, chatGPTService, jlptService);
+            
             NavigateCommand = new RelayCommand<string>(Navigate);
             LoadDataCommand = new RelayCommand(async () => await LoadDataAsync());
             ExportDataCommand = new RelayCommand<string>(async (format) => await ExportDataAsync(format));
@@ -79,6 +82,8 @@ namespace JapaneseTracker.ViewModels
         public ICommand ShowPerformanceReportCommand { get; }
         public ICommand ShowKeyboardShortcutsCommand { get; }
         
+        public DashboardViewModel DashboardViewModel { get; }
+        
         private void Navigate(string? viewName)
         {
             if (!string.IsNullOrEmpty(viewName))
@@ -95,6 +100,8 @@ namespace JapaneseTracker.ViewModels
                 if (CurrentUser != null)
                 {
                     CurrentUser = await _databaseService.GetUserByIdAsync(CurrentUser.UserId);
+                    // Sync user with DashboardViewModel
+                    DashboardViewModel.User = CurrentUser;
                 }
             }
             catch (Exception ex)
@@ -118,6 +125,9 @@ namespace JapaneseTracker.ViewModels
                     user = await _databaseService.CreateUserAsync("DefaultUser");
                 }
                 CurrentUser = user;
+                
+                // Sync user with DashboardViewModel
+                DashboardViewModel.User = user;
             }
             catch (Exception ex)
             {

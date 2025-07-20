@@ -34,6 +34,8 @@ namespace JapaneseTracker.ViewModels
         
         public JLPTProgressViewModel() : this(null, null)
         {
+            // Initialize with sample data when no services are provided
+            InitializeWithSampleData();
         }
         
         public JLPTProgressViewModel(
@@ -352,10 +354,10 @@ namespace JapaneseTracker.ViewModels
                         Id = kp.KanjiId,
                         Content = kp.Kanji!.Character,
                         Meaning = kp.Kanji.Meaning,
-                        Reading = kp.Kanji.OnReading + ", " + kp.Kanji.KunReading,
+                        Reading = string.Join(", ", kp.Kanji.OnReadings) + ", " + string.Join(", ", kp.Kanji.KunReadings),
                         JLPTLevel = kp.Kanji.JLPTLevel,
                         SRSLevel = kp.SRSLevel,
-                        LastReviewed = kp.LastReviewedDate,
+                        LastReviewed = kp.LastReviewed,
                         IsWeak = kp.SRSLevel <= 2
                     })
                     .ToList();
@@ -372,10 +374,10 @@ namespace JapaneseTracker.ViewModels
                         Id = vp.VocabId,
                         Content = vp.Vocabulary!.Word,
                         Meaning = vp.Vocabulary.Meaning,
-                        Reading = vp.Vocabulary.Furigana,
+                        Reading = vp.Vocabulary.Reading,
                         JLPTLevel = vp.Vocabulary.JLPTLevel,
                         SRSLevel = vp.SRSLevel,
-                        LastReviewed = vp.LastReviewedDate,
+                        LastReviewed = vp.LastReviewed,
                         IsWeak = vp.SRSLevel <= 2
                     })
                     .ToList();
@@ -392,10 +394,10 @@ namespace JapaneseTracker.ViewModels
                         Id = gp.GrammarId,
                         Content = gp.Grammar!.Pattern,
                         Meaning = gp.Grammar.Meaning,
-                        Reading = gp.Grammar.Usage,
+                        Reading = gp.Grammar.Structure,
                         JLPTLevel = gp.Grammar.JLPTLevel,
                         SRSLevel = gp.UnderstandingLevel,
-                        LastReviewed = gp.LastReviewedDate,
+                        LastReviewed = gp.LastPracticed,
                         IsWeak = gp.UnderstandingLevel <= 2
                     })
                     .ToList();
@@ -620,9 +622,9 @@ namespace JapaneseTracker.ViewModels
                     // Sample study sessions
                     var sampleSessions = new List<StudySession>
                     {
-                        new StudySession { SessionId = 1, StartTime = DateTime.Now.AddDays(-1), StudyType = "Kanji", ItemsStudied = 25 },
-                        new StudySession { SessionId = 2, StartTime = DateTime.Now.AddDays(-2), StudyType = "Vocabulary", ItemsStudied = 30 },
-                        new StudySession { SessionId = 3, StartTime = DateTime.Now.AddDays(-3), StudyType = "Grammar", ItemsStudied = 15 }
+                        new StudySession { SessionId = 1, StartTime = DateTime.Now.AddDays(-1), SessionType = "Kanji", ItemsStudied = 25 },
+                        new StudySession { SessionId = 2, StartTime = DateTime.Now.AddDays(-2), SessionType = "Vocabulary", ItemsStudied = 30 },
+                        new StudySession { SessionId = 3, StartTime = DateTime.Now.AddDays(-3), SessionType = "Grammar", ItemsStudied = 15 }
                     };
                     RecentStudySessions = new ObservableCollection<StudySession>(sampleSessions);
                 }

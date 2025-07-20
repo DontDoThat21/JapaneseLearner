@@ -5,14 +5,14 @@
              xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
              xmlns:converters="clr-namespace:JapaneseTracker.Converters">
     
+    <UserControl.DataContext>
+        <viewModels:DashboardViewModel/>
+    </UserControl.DataContext>
+    
     <UserControl.Resources>
         <converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <converters:JLPTLevelToColorConverter x:Key="JLPTLevelToColorConverter"/>
     </UserControl.Resources>
-    
-    <UserControl.DataContext>
-        <viewModels:DashboardViewModel/>
-    </UserControl.DataContext>
     
     <ScrollViewer VerticalScrollBarVisibility="Auto" 
                   HorizontalScrollBarVisibility="Disabled">
