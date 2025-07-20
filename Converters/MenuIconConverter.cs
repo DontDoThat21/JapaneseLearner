@@ -67,7 +67,7 @@ namespace JapaneseTracker.Converters
             if (value is string selectedView)
             {
                 // Show "coming soon" message for views that are not yet implemented
-                string[] implementedViews = { "Dashboard", "Kanji", "Practice" };
+                string[] implementedViews = { "Dashboard", "Kanji", "Practice", "JLPT Progress" };
                 return !implementedViews.Contains(selectedView);
             }
             return false;

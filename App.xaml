@@ -21,6 +21,7 @@
             <converters:MenuIconConverter x:Key="MenuIconConverter"/>
             <converters:ViewVisibilityConverter x:Key="ViewVisibilityConverter"/>
             <converters:ViewNotImplementedConverter x:Key="ViewNotImplementedConverter"/>
+            <converters:PercentToCircleConverter x:Key="PercentToCircleConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:BooleanToVisibilityMultiValueConverter x:Key="MultiValueConverter"/>
             
