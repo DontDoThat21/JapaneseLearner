@@ -155,7 +155,7 @@
                                      Height="4" 
                                      Background="{StaticResource SurfaceBrush}"
                                      Foreground="{StaticResource JLPTN3Brush}"/>
-                        <TextBlock Text="N4 Progress: 82%" 
+                        <TextBlock Text="{Binding N4ProgressPercentage, StringFormat='N4 Progress: {0}%'}" 
                                    FontSize="10" 
                                    HorizontalAlignment="Center"
                                    Opacity="0.7"
