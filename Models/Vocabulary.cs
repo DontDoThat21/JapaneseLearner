@@ -50,6 +50,9 @@ namespace JapaneseTracker.Models
             get => JsonSerializer.Deserialize<List<string>>(RelatedKanjiJson) ?? new List<string>();
             set => RelatedKanjiJson = JsonSerializer.Serialize(value);
         }
+        
+        // Helper property for XAML binding compatibility
+        public string Furigana => Reading;
     }
     
     public class ExampleSentence

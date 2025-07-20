@@ -24,6 +24,35 @@ namespace JapaneseTracker.ViewModels
         private bool _isLoading = false;
         private User? _currentUser;
         
+        // Parameterless constructor for XAML design-time support
+        public VocabularyViewModel()
+        {
+            _databaseService = null!;
+            _srsService = null!;
+            _chatGPTService = null!;
+            
+            // Initialize collections for design-time
+            JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
+            
+            // Initialize commands with no-op implementations for design-time
+            LoadVocabularyCommand = new RelayCommand(() => { });
+            SelectVocabularyCommand = new RelayCommand<Vocabulary>((vocab) => { SelectedVocabulary = vocab; });
+            StudyVocabularyCommand = new RelayCommand<Vocabulary>((vocab) => { });
+            SearchVocabularyCommand = new RelayCommand(() => { });
+            
+            // Mock data for design-time preview
+            VocabularyList = new ObservableCollection<Vocabulary>
+            {
+                new Vocabulary { VocabId = 1, Word = "こんにちは", Reading = "こんにちは", Meaning = "Hello", JLPTLevel = "N5", PartOfSpeech = "Greeting" },
+                new Vocabulary { VocabId = 2, Word = "ありがとう", Reading = "ありがとう", Meaning = "Thank you", JLPTLevel = "N5", PartOfSpeech = "Expression" },
+                new Vocabulary { VocabId = 3, Word = "学校", Reading = "がっこう", Meaning = "School", JLPTLevel = "N5", PartOfSpeech = "Noun" }
+            };
+            
+            // Mock user for design-time
+            CurrentUser = new User { UserId = 1, Username = "TestUser", StudyStreak = 15 };
+        }
+        
+        // Dependency injection constructor
         public VocabularyViewModel(
             DatabaseService databaseService,
             SRSCalculationService srsService,
@@ -144,6 +173,7 @@ namespace JapaneseTracker.ViewModels
                     }
                 }
                 VocabularyProgress = new ObservableCollection<VocabularyProgress>(progressList);
+                NotifyStatsChanged();
             }
             catch (Exception ex)
             {
@@ -198,6 +228,7 @@ namespace JapaneseTracker.ViewModels
                 
                 await _databaseService.UpdateVocabularyProgressAsync(progress);
                 await LoadVocabularyProgressAsync();
+                NotifyStatsChanged();
             }
             catch (Exception ex)
             {
@@ -243,6 +274,35 @@ namespace JapaneseTracker.ViewModels
             if (progress == null) return "New";
             
             return _srsService.GetMasteryLevel(progress.SRSLevel, progress.AccuracyRate);
+        }
+        
+        // Computed properties for statistics cards
+        public int LearnedCount
+        {
+            get
+            {
+                if (CurrentUser == null) return 0;
+                
+                // Count vocabulary with SRS level > 2 (considered "learned")
+                return VocabularyProgress.Count(vp => vp.SRSLevel > 2);
+            }
+        }
+        
+        public int ReviewDueCount
+        {
+            get
+            {
+                if (CurrentUser == null) return 0;
+                
+                // Count vocabulary that needs review today
+                return VocabularyProgress.Count(vp => vp.IsReviewDue);
+            }
+        }
+        
+        private void NotifyStatsChanged()
+        {
+            OnPropertyChanged(nameof(LearnedCount));
+            OnPropertyChanged(nameof(ReviewDueCount));
         }
     }
 }

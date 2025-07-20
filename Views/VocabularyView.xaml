@@ -3,7 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
+             xmlns:converters="clr-namespace:JapaneseTracker.Converters"
              Background="Transparent">
+    
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:JLPTLevelToColorConverter x:Key="JLPTLevelToColorConverter"/>
+        <converters:SRSLevelToIconConverter x:Key="SRSLevelToIconConverter"/>
+    </UserControl.Resources>
     
     <UserControl.DataContext>
         <viewModels:VocabularyViewModel/>
