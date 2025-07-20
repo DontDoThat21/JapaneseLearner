@@ -227,6 +227,10 @@
                         <views:PracticeView/>
                     </Grid>
                     
+                    <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='JLPT Progress'}">
+                        <views:JLPTProgressView/>
+                    </Grid>
+                    
                     <!-- Placeholder for other views -->
                     <StackPanel HorizontalAlignment="Center" 
                               VerticalAlignment="Center"
