@@ -16,9 +16,9 @@ namespace JapaneseTracker.ViewModels
         private readonly SRSCalculationService _srsService;
         private readonly ChatGPTJapaneseService _chatGPTService;
         
-        private ObservableCollection<Vocabulary> _vocabularyList = new();
+        private ObservableCollection<VocabularyDisplayModel> _vocabularyList = new();
         private ObservableCollection<VocabularyProgress> _vocabularyProgress = new();
-        private Vocabulary? _selectedVocabulary;
+        private VocabularyDisplayModel? _selectedVocabulary;
         private string _selectedJLPTLevel = "N5";
         private string _searchText = "";
         private bool _isLoading = false;
@@ -36,16 +36,28 @@ namespace JapaneseTracker.ViewModels
             
             // Initialize commands with no-op implementations for design-time
             LoadVocabularyCommand = new RelayCommand(() => { });
-            SelectVocabularyCommand = new RelayCommand<Vocabulary>((vocab) => { SelectedVocabulary = vocab; });
-            StudyVocabularyCommand = new RelayCommand<Vocabulary>((vocab) => { });
+            SelectVocabularyCommand = new RelayCommand<VocabularyDisplayModel>((vocab) => { SelectedVocabulary = vocab; });
+            StudyVocabularyCommand = new RelayCommand<VocabularyDisplayModel>((vocab) => { });
             SearchVocabularyCommand = new RelayCommand(() => { });
             
             // Mock data for design-time preview
-            VocabularyList = new ObservableCollection<Vocabulary>
+            VocabularyList = new ObservableCollection<VocabularyDisplayModel>
             {
-                new Vocabulary { VocabId = 1, Word = "こんにちは", Reading = "こんにちは", Meaning = "Hello", JLPTLevel = "N5", PartOfSpeech = "Greeting" },
-                new Vocabulary { VocabId = 2, Word = "ありがとう", Reading = "ありがとう", Meaning = "Thank you", JLPTLevel = "N5", PartOfSpeech = "Expression" },
-                new Vocabulary { VocabId = 3, Word = "学校", Reading = "がっこう", Meaning = "School", JLPTLevel = "N5", PartOfSpeech = "Noun" }
+                new VocabularyDisplayModel 
+                { 
+                    Vocabulary = new Vocabulary { VocabId = 1, Word = "こんにちは", Reading = "こんにちは", Meaning = "Hello", JLPTLevel = "N5", PartOfSpeech = "Greeting" },
+                    Progress = new VocabularyProgress { SRSLevel = 2, CorrectCount = 5, IncorrectCount = 1 }
+                },
+                new VocabularyDisplayModel 
+                { 
+                    Vocabulary = new Vocabulary { VocabId = 2, Word = "ありがとう", Reading = "ありがとう", Meaning = "Thank you", JLPTLevel = "N5", PartOfSpeech = "Expression" },
+                    Progress = new VocabularyProgress { SRSLevel = 4, CorrectCount = 12, IncorrectCount = 2 }
+                },
+                new VocabularyDisplayModel 
+                { 
+                    Vocabulary = new Vocabulary { VocabId = 3, Word = "学校", Reading = "がっこう", Meaning = "School", JLPTLevel = "N5", PartOfSpeech = "Noun" },
+                    Progress = null // New word, not studied yet
+                }
             };
             
             // Mock user for design-time
@@ -64,8 +76,8 @@ namespace JapaneseTracker.ViewModels
             
             // Commands
             LoadVocabularyCommand = new RelayCommand(async () => await LoadVocabularyAsync());
-            SelectVocabularyCommand = new RelayCommand<Vocabulary>(async (vocab) => await SelectVocabularyAsync(vocab));
-            StudyVocabularyCommand = new RelayCommand<Vocabulary>(async (vocab) => await StudyVocabularyAsync(vocab));
+            SelectVocabularyCommand = new RelayCommand<VocabularyDisplayModel>(async (vocab) => await SelectVocabularyAsync(vocab));
+            StudyVocabularyCommand = new RelayCommand<VocabularyDisplayModel>(async (vocab) => await StudyVocabularyAsync(vocab));
             SearchVocabularyCommand = new RelayCommand(async () => await SearchVocabularyAsync());
             
             JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
@@ -74,7 +86,7 @@ namespace JapaneseTracker.ViewModels
             _ = InitializeAsync();
         }
         
-        public ObservableCollection<Vocabulary> VocabularyList
+        public ObservableCollection<VocabularyDisplayModel> VocabularyList
         {
             get => _vocabularyList;
             set => SetProperty(ref _vocabularyList, value);
@@ -86,7 +98,7 @@ namespace JapaneseTracker.ViewModels
             set => SetProperty(ref _vocabularyProgress, value);
         }
         
-        public Vocabulary? SelectedVocabulary
+        public VocabularyDisplayModel? SelectedVocabulary
         {
             get => _selectedVocabulary;
             set => SetProperty(ref _selectedVocabulary, value);
@@ -145,7 +157,24 @@ namespace JapaneseTracker.ViewModels
             try
             {
                 var vocabularyList = await _databaseService.GetVocabularyByJLPTLevelAsync(SelectedJLPTLevel);
-                VocabularyList = new ObservableCollection<Vocabulary>(vocabularyList);
+                
+                // Create display models combining vocabulary and progress data
+                var displayModels = new List<VocabularyDisplayModel>();
+                foreach (var vocabulary in vocabularyList)
+                {
+                    var progress = CurrentUser != null 
+                        ? await _databaseService.GetVocabularyProgressAsync(CurrentUser.UserId, vocabulary.VocabId)
+                        : null;
+                    
+                    displayModels.Add(new VocabularyDisplayModel
+                    {
+                        Vocabulary = vocabulary,
+                        Progress = progress
+                    });
+                }
+                
+                VocabularyList = new ObservableCollection<VocabularyDisplayModel>(displayModels);
+                NotifyStatsChanged();
             }
             catch (Exception ex)
             {
@@ -186,7 +215,7 @@ namespace JapaneseTracker.ViewModels
             SelectedVocabulary = vocabulary;
         }
         
-        private async Task SelectVocabularyAsync(Vocabulary? vocabulary)
+        private async Task SelectVocabularyAsync(VocabularyDisplayModel? vocabulary)
         {
             // TODO Not sure what this method was intended to do
             SelectedVocabulary = vocabulary;
@@ -194,20 +223,20 @@ namespace JapaneseTracker.ViewModels
             await Task.CompletedTask;
         }
         
-        private async Task StudyVocabularyAsync(Vocabulary? vocabulary)
+        private async Task StudyVocabularyAsync(VocabularyDisplayModel? vocabularyModel)
         {
-            if (vocabulary == null || CurrentUser == null) return;
+            if (vocabularyModel?.Vocabulary == null || CurrentUser == null) return;
             
             try
             {
                 // Get or create progress record
-                var progress = await _databaseService.GetVocabularyProgressAsync(CurrentUser.UserId, vocabulary.VocabId);
+                var progress = await _databaseService.GetVocabularyProgressAsync(CurrentUser.UserId, vocabularyModel.VocabId);
                 if (progress == null)
                 {
                     progress = new VocabularyProgress
                     {
                         UserId = CurrentUser.UserId,
-                        VocabId = vocabulary.VocabId,
+                        VocabId = vocabularyModel.VocabId,
                         SRSLevel = 0,
                         NextReviewDate = DateTime.UtcNow
                     };
@@ -227,7 +256,7 @@ namespace JapaneseTracker.ViewModels
                     progress.IncorrectCount++;
                 
                 await _databaseService.UpdateVocabularyProgressAsync(progress);
-                await LoadVocabularyProgressAsync();
+                await LoadVocabularyAsync(); // Refresh the display models
                 NotifyStatsChanged();
             }
             catch (Exception ex)
@@ -251,7 +280,23 @@ namespace JapaneseTracker.ViewModels
                     v.PartOfSpeech.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
                 ).ToList();
                 
-                VocabularyList = new ObservableCollection<Vocabulary>(filteredVocabulary);
+                // Create display models for filtered results
+                var displayModels = new List<VocabularyDisplayModel>();
+                foreach (var vocabulary in filteredVocabulary)
+                {
+                    var progress = CurrentUser != null 
+                        ? await _databaseService.GetVocabularyProgressAsync(CurrentUser.UserId, vocabulary.VocabId)
+                        : null;
+                    
+                    displayModels.Add(new VocabularyDisplayModel
+                    {
+                        Vocabulary = vocabulary,
+                        Progress = progress
+                    });
+                }
+                
+                VocabularyList = new ObservableCollection<VocabularyDisplayModel>(displayModels);
+                NotifyStatsChanged();
             }
             catch (Exception ex)
             {
@@ -284,7 +329,7 @@ namespace JapaneseTracker.ViewModels
                 if (CurrentUser == null) return 0;
                 
                 // Count vocabulary with SRS level > 2 (considered "learned")
-                return VocabularyProgress.Count(vp => vp.SRSLevel > 2);
+                return VocabularyList.Count(v => v.SRSLevel > 2);
             }
         }
         
@@ -295,7 +340,7 @@ namespace JapaneseTracker.ViewModels
                 if (CurrentUser == null) return 0;
                 
                 // Count vocabulary that needs review today
-                return VocabularyProgress.Count(vp => vp.IsReviewDue);
+                return VocabularyList.Count(v => v.IsReviewDue);
             }
         }
         
