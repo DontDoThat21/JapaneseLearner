@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Extensions.Configuration;
 
 namespace JapaneseTracker.ViewModels
 {
@@ -27,11 +28,14 @@ namespace JapaneseTracker.ViewModels
         // Parameterless constructor for XAML design-time support
         public KanjiViewModel()
         {
+            // Create a simple mock configuration for design-time
+            var mockConfig = CreateMockConfiguration();
+            
             // Initialize with default services for design-time
             _databaseService = new DatabaseService(null!);
             _kanjiRadicalService = new KanjiRadicalService();
-            _srsService = new SRSCalculationService();
-            _chatGPTService = new ChatGPTJapaneseService(new MockChatGPTJapaneseService());
+            _srsService = new SRSCalculationService(mockConfig);
+            _chatGPTService = new ChatGPTJapaneseService(mockConfig);
             
             // Commands
             LoadKanjiCommand = new RelayCommand(async () => await LoadKanjiAsync());
@@ -65,6 +69,33 @@ namespace JapaneseTracker.ViewModels
             
             // Initialize
             _ = InitializeAsync();
+        }
+        
+        // Helper method to create mock configuration for design-time
+        private static IConfiguration CreateMockConfiguration()
+        {
+            var configValues = new Dictionary<string, string>
+            {
+                ["SRS:Intervals:0"] = "1",
+                ["SRS:Intervals:1"] = "3", 
+                ["SRS:Intervals:2"] = "7",
+                ["SRS:Intervals:3"] = "14",
+                ["SRS:Intervals:4"] = "30",
+                ["SRS:Intervals:5"] = "90",
+                ["SRS:Intervals:6"] = "180",
+                ["SRS:Intervals:7"] = "365",
+                ["SRS:InitialInterval"] = "1",
+                ["SRS:EasyBonus"] = "1.3",
+                ["SRS:HardPenalty"] = "0.6",
+                ["ChatGPT:Model"] = "gpt-4",
+                ["ChatGPT:MaxTokens"] = "300",
+                ["ChatGPT:Temperature"] = "0.7",
+                ["ChatGPT:SystemPrompt"] = "You are a helpful Japanese language tutor."
+            };
+
+            return new ConfigurationBuilder()
+                .AddInMemoryCollection(configValues!)
+                .Build();
         }
         
         public ObservableCollection<KanjiDisplayModel> KanjiList
