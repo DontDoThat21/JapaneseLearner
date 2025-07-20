@@ -77,7 +77,7 @@
                         </Grid>
                         
                         <!-- JLPT Level Badge -->
-                        <Border Background="{Binding User.CurrentJLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}, Converter={StaticResource ColorToBrushConverter}}"
+                        <Border Background="{Binding User.CurrentJLPTLevel, Converter={StaticResource JLPTLevelToColorConverter}}"
                                 Padding="12,6"
                                 CornerRadius="16"
                                 HorizontalAlignment="Left"
@@ -524,88 +524,196 @@
                                    Margin="0,24,0,0" 
                                    Padding="24"
                                    Style="{StaticResource AnimatedCardStyle}">
-                    <StackPanel>
-                        <Grid Margin="0,0,0,16">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <TextBlock Grid.Column="0"
-                                     Text="This Week's Study Activity" 
-                                     FontSize="18" 
-                                     FontWeight="Medium"/>
-                            
-                            <TextBlock Grid.Column="1"
-                                     Text="67 hours total" 
-                                     FontSize="14" 
-                                     Opacity="0.7"
-                                     VerticalAlignment="Center"/>
-                        </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
                         
                         <!-- Study Heatmap -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0"
+                                         Text="This Week's Study Activity" 
+                                         FontSize="18" 
+                                         FontWeight="Medium"/>
+                                
+                                <TextBlock Grid.Column="1"
+                                         Text="67 hours total" 
+                                         FontSize="14" 
+                                         Opacity="0.7"
+                                         VerticalAlignment="Center"/>
+                            </Grid>
                             
-                            <!-- Day blocks -->
-                            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                <TextBlock Text="Mon" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource SuccessBrush}" Width="40" Height="40" CornerRadius="8">
-                                    <TextBlock Text="2.5h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!-- Study Heatmap -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <!-- Day blocks -->
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock Text="Mon" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource SuccessBrush}" Width="40" Height="40" CornerRadius="8">
+                                        <TextBlock Text="2.5h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock Text="Tue" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource JLPTN4Brush}" Width="40" Height="40" CornerRadius="8">
+                                        <TextBlock Text="1.8h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Text="Wed" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource SuccessBrush}" Width="40" Height="40" CornerRadius="8">
+                                        <TextBlock Text="3.2h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                    <TextBlock Text="Thu" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource JLPTN3Brush}" Width="40" Height="40" CornerRadius="8">
+                                        <TextBlock Text="1.5h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                                    <TextBlock Text="Fri" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource SuccessBrush}" Width="40" Height="40" CornerRadius="8">
+                                        <TextBlock Text="2.1h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="5" HorizontalAlignment="Center">
+                                    <TextBlock Text="Sat" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource JLPTN2Brush}" Width="40" Height="40" CornerRadius="8">
+                                        <TextBlock Text="0.9h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="6" HorizontalAlignment="Center">
+                                    <TextBlock Text="Sun" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <Border Background="{StaticResource SurfaceBrush}" Width="40" Height="40" CornerRadius="8" BorderBrush="{StaticResource OnSurfaceBrush}" BorderThickness="2" Opacity="0.5">
+                                        <TextBlock Text="Today" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <!-- Recent Achievements -->
+                        <StackPanel Grid.Column="1" Margin="40,0,0,0">
+                            <TextBlock Text="Recent Achievements" 
+                                     FontSize="16" 
+                                     FontWeight="Medium"
+                                     Margin="0,0,0,16"/>
+                            
+                            <!-- Achievement Items -->
+                            <StackPanel>
+                                <!-- Achievement 1 -->
+                                <Border Background="{StaticResource SurfaceBrush}"
+                                        Padding="12"
+                                        Margin="0,0,0,8"
+                                        CornerRadius="8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <materialDesign:PackIcon Grid.Column="0" 
+                                                               Kind="Trophy" 
+                                                               Width="20" 
+                                                               Height="20"
+                                                               Foreground="{StaticResource JLPTN3Brush}"
+                                                               VerticalAlignment="Center"
+                                                               Margin="0,0,12,0"/>
+                                        
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="First Week!" 
+                                                     FontWeight="Medium"
+                                                     FontSize="13"/>
+                                            <TextBlock Text="Complete 7 days of study" 
+                                                     FontSize="11" 
+                                                     Opacity="0.6"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                
+                                <!-- Achievement 2 -->
+                                <Border Background="{StaticResource SurfaceBrush}"
+                                        Padding="12"
+                                        Margin="0,0,0,8"
+                                        CornerRadius="8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <materialDesign:PackIcon Grid.Column="0" 
+                                                               Kind="BookOpen" 
+                                                               Width="20" 
+                                                               Height="20"
+                                                               Foreground="{StaticResource JLPTN4Brush}"
+                                                               VerticalAlignment="Center"
+                                                               Margin="0,0,12,0"/>
+                                        
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Kanji Master" 
+                                                     FontWeight="Medium"
+                                                     FontSize="13"/>
+                                            <TextBlock Text="Learn 100+ Kanji characters" 
+                                                     FontSize="11" 
+                                                     Opacity="0.6"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                
+                                <!-- Achievement 3 -->
+                                <Border Background="{StaticResource SurfaceBrush}"
+                                        Padding="12"
+                                        CornerRadius="8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <materialDesign:PackIcon Grid.Column="0" 
+                                                               Kind="FlashAuto" 
+                                                               Width="20" 
+                                                               Height="20"
+                                                               Foreground="{StaticResource JLPTN1Brush}"
+                                                               VerticalAlignment="Center"
+                                                               Margin="0,0,12,0"/>
+                                        
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Review Streak" 
+                                                     FontWeight="Medium"
+                                                     FontSize="13"/>
+                                            <TextBlock Text="Complete 50+ reviews" 
+                                                     FontSize="11" 
+                                                     Opacity="0.6"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
-                            
-                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                <TextBlock Text="Tue" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource JLPTN4Brush}" Width="40" Height="40" CornerRadius="8">
-                                    <TextBlock Text="1.8h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                                <TextBlock Text="Wed" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource SuccessBrush}" Width="40" Height="40" CornerRadius="8">
-                                    <TextBlock Text="3.2h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="3" HorizontalAlignment="Center">
-                                <TextBlock Text="Thu" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource JLPTN3Brush}" Width="40" Height="40" CornerRadius="8">
-                                    <TextBlock Text="1.5h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="4" HorizontalAlignment="Center">
-                                <TextBlock Text="Fri" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource SuccessBrush}" Width="40" Height="40" CornerRadius="8">
-                                    <TextBlock Text="2.1h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="5" HorizontalAlignment="Center">
-                                <TextBlock Text="Sat" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource JLPTN2Brush}" Width="40" Height="40" CornerRadius="8">
-                                    <TextBlock Text="0.9h" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
-                            
-                            <StackPanel Grid.Column="6" HorizontalAlignment="Center">
-                                <TextBlock Text="Sun" FontSize="12" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                <Border Background="{StaticResource SurfaceBrush}" Width="40" Height="40" CornerRadius="8" BorderBrush="{StaticResource OnSurfaceBrush}" BorderThickness="2" Opacity="0.5">
-                                    <TextBlock Text="Today" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
-                                </Border>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
+                        </StackPanel>
+                    </Grid>
                 </materialDesign:Card>
             </Grid>
         </Grid>
