@@ -1,12 +1,12 @@
-# 🌸 Japanese Learning Tracker
+# 🌸 Japanese Learner
 
 A comprehensive WPF desktop application designed to track Japanese language learning progress from absolute beginner to expert level (JLPT N5 → N1). Features a modern Material Design interface with a dark midnight theme, SQLite database for persistence, and ChatGPT API integration for AI-powered learning assistance.
 
-![Japanese Learning Tracker](https://img.shields.io/badge/WPF-.NET%206.0+-blue) ![Material Design](https://img.shields.io/badge/UI-Material%20Design-purple) ![SQLite](https://img.shields.io/badge/Database-SQLite-green) ![ChatGPT](https://img.shields.io/badge/AI-ChatGPT%20API-orange)
+![Japanese Learner](https://img.shields.io/badge/WPF-.NET%206.0+-blue) ![Material Design](https://img.shields.io/badge/UI-Material%20Design-purple) ![SQLite](https://img.shields.io/badge/Database-SQLite-green) ![ChatGPT](https://img.shields.io/badge/AI-ChatGPT%20API-orange)
 
 ## 🎯 Project Goals
 
-- ✨ Create an aesthetically pleasing Japanese learning tracker with Material Design principles
+- ✨ Create an aesthetically pleasing Japanese Learner with Material Design principles
 - 📝 Track progress across all Japanese writing systems (Hiragana, Katakana, Kanji)
 - 📊 Implement real-time progress tracking for vocabulary, grammar, and JLPT levels
 - 💾 Store learning data persistently using SQLite

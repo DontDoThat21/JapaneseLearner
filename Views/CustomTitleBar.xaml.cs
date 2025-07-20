@@ -123,7 +123,7 @@ namespace JapaneseTracker.Views
         // Dependency Properties for customization
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register("Title", typeof(string), typeof(CustomTitleBar), 
-                new PropertyMetadata("Japanese Learning Tracker"));
+                new PropertyMetadata("Japanese Learner"));
 
         public string Title
         {
@@ -133,7 +133,7 @@ namespace JapaneseTracker.Views
 
         public static readonly DependencyProperty SubtitleProperty =
             DependencyProperty.Register("Subtitle", typeof(string), typeof(CustomTitleBar), 
-                new PropertyMetadata("??????????"));
+                new PropertyMetadata("TODOWIP"));
 
         public string Subtitle
         {

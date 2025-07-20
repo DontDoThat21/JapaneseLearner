@@ -321,7 +321,7 @@ namespace JapaneseTracker.Services
             var report = new System.Text.StringBuilder();
             var uptime = _applicationStopwatch.Elapsed;
             
-            report.AppendLine("=== Japanese Learning Tracker Performance Report ===");
+            report.AppendLine("=== Japanese Learner Performance Report ===");
             report.AppendLine($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             report.AppendLine($"Uptime: {uptime.Days}d {uptime.Hours:D2}h {uptime.Minutes:D2}m {uptime.Seconds:D2}s");
             report.AppendLine();

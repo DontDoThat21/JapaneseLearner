@@ -5,7 +5,7 @@
         xmlns:views="clr-namespace:JapaneseTracker.Views"
         xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
         xmlns:converters="clr-namespace:JapaneseTracker.Converters"
-        Title="Japanese Learning Tracker" 
+        Title="Japanese Learner" 
         Height="900" 
         Width="1400"
         WindowStartupLocation="CenterScreen"
