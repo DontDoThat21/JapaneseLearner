@@ -4,6 +4,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:views="clr-namespace:JapaneseTracker.Views"
         xmlns:viewModels="clr-namespace:JapaneseTracker.ViewModels"
+        xmlns:converters="clr-namespace:JapaneseTracker.Converters"
         Title="Japanese Learning Tracker" 
         Height="900" 
         Width="1400"
@@ -15,6 +16,13 @@
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto">
+    
+    <Window.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:ViewVisibilityConverter x:Key="ViewVisibilityConverter"/>
+        <converters:ViewNotImplementedConverter x:Key="ViewNotImplementedConverter"/>
+        <converters:MenuIconConverter x:Key="MenuIconConverter"/>
+    </Window.Resources>
     
     <!-- Keyboard Shortcuts for Navigation and Reviews -->
     <Window.InputBindings>
@@ -84,13 +92,16 @@
                         <StackPanel>
                             <TextBlock Text="{Binding CurrentUser.Username, FallbackValue='Guest User'}" 
                                        FontWeight="SemiBold" 
-                                       FontSize="14"/>
+                                       FontSize="14"
+                                       Foreground="{StaticResource OnSurfaceBrush}"/>
                             <TextBlock Text="{Binding CurrentUser.CurrentJLPTLevel, StringFormat='Current Level: {0}', FallbackValue='Level: N5'}" 
                                        FontSize="12" 
-                                       Opacity="0.8"/>
+                                       Opacity="0.8"
+                                       Foreground="{StaticResource OnSurfaceBrush}"/>
                             <TextBlock Text="{Binding CurrentUser.StudyStreak, StringFormat='Study Streak: {0} days', FallbackValue='Streak: 0 days'}" 
                                        FontSize="12" 
-                                       Opacity="0.8"/>
+                                       Opacity="0.8"
+                                       Foreground="{StaticResource OnSurfaceBrush}"/>
                         </StackPanel>
                     </Border>
                     
@@ -129,7 +140,7 @@
             <DockPanel>
                 <!-- Top App Bar -->
                 <materialDesign:ColorZone Padding="16" 
-                                        materialDesign:ElevationAssist.Elevation="Dp4" 
+                                        materialDesign:ShadowAssist.ShadowDepth="Depth2" 
                                         DockPanel.Dock="Top" 
                                         Mode="PrimaryMid">
                     <Grid>
@@ -190,7 +201,8 @@
                                        Height="32"/>
                             <TextBlock Text="Loading..." 
                                      VerticalAlignment="Center" 
-                                     Margin="16,0,0,0"/>
+                                     Margin="16,0,0,0"
+                                     Foreground="{StaticResource OnSurfaceBrush}"/>
                         </StackPanel>
                     </materialDesign:Card>
                     
@@ -201,6 +213,14 @@
                     
                     <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Kanji'}">
                         <views:KanjiView/>
+                    </Grid>
+                    
+                    <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Vocabulary'}">
+                        <views:VocabularyView/>
+                    </Grid>
+                    
+                    <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Grammar'}">
+                        <views:GrammarView/>
                     </Grid>
                     
                     <Grid Visibility="{Binding SelectedView, Converter={StaticResource ViewVisibilityConverter}, ConverterParameter='Practice'}">
@@ -219,17 +239,20 @@
                         <materialDesign:PackIcon Kind="Construction" 
                                                Width="64" 
                                                Height="64" 
-                                               HorizontalAlignment="Center"/>
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource OnBackgroundBrush}"/>
                         <TextBlock Text="{Binding SelectedView, StringFormat='Coming Soon: {0} View'}"
                                  FontSize="24"
                                  FontWeight="Light"
                                  HorizontalAlignment="Center"
-                                 Margin="0,16,0,0"/>
+                                 Margin="0,16,0,0"
+                                 Foreground="{StaticResource OnBackgroundBrush}"/>
                         <TextBlock Text="This feature is under development"
                                  FontSize="16"
                                  HorizontalAlignment="Center"
                                  Opacity="0.8"
-                                 Margin="0,8,0,0"/>
+                                 Margin="0,8,0,0"
+                                 Foreground="{StaticResource OnBackgroundBrush}"/>
                     </StackPanel>
                 </Grid>
             </DockPanel>
