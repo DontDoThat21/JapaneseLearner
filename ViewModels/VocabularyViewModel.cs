@@ -240,7 +240,7 @@ namespace JapaneseTracker.ViewModels
                     progress = new VocabularyProgress
                     {
                         UserId = CurrentUser.UserId,
-                        VocabId = vocabularyModel.VocabId,
+                        VocabId = vocabularyModel.Vocabulary.VocabId,
                         SRSLevel = 0,
                         NextReviewDate = DateTime.UtcNow
                     };
