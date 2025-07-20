@@ -308,7 +308,7 @@
                                          
                                 <!-- Quick Action Button -->
                                 <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                      Background="#FF9800"
+                                      Background="{StaticResource AccentBrush}"
                                       Content="Practice"
                                       Margin="0,8,0,0"
                                       Command="{Binding DataContext.StartPracticeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
