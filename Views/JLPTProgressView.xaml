@@ -559,7 +559,7 @@
                                                         <!-- Weakness Indicator -->
                                                         <materialDesign:PackIcon Grid.Column="2" 
                                                                                Kind="AlertCircle"
-                                                                               Foreground="#F44336"
+                                                                               Foreground="{StaticResource AlertColorBrush}"
                                                                                Width="20" 
                                                                                Height="20"
                                                                                Visibility="{Binding IsWeak, Converter={StaticResource BooleanToVisibilityConverter}}"
