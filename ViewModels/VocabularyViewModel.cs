@@ -24,7 +24,11 @@ namespace JapaneseTracker.ViewModels
         private bool _isLoading = false;
         private User? _currentUser;
         
-        // Parameterless constructor for XAML design-time support
+        /// <summary>
+        /// Parameterless constructor for XAML design-time support.
+        /// Initializes dependencies as null and provides mock data for design-time preview.
+        /// This constructor should not be used in runtime scenarios.
+        /// </summary>
         public VocabularyViewModel()
         {
             _databaseService = null!;
