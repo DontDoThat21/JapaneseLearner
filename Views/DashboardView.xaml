@@ -202,7 +202,7 @@
                                      Height="4" 
                                      Background="{StaticResource SurfaceBrush}"
                                      Foreground="{StaticResource JLPTN4Brush}"/>
-                        <TextBlock Text="N4 Progress: 60%" 
+                        <TextBlock Text="{Binding VocabularyProgressPercentage, StringFormat='N4 Progress: {0}%'}" 
                                    FontSize="10" 
                                    HorizontalAlignment="Center"
                                    Opacity="0.7"
