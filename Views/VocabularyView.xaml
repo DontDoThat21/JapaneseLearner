@@ -38,10 +38,42 @@
                                Margin="0,0,0,8"/>
                     <TextBlock Text="Build your Japanese vocabulary with context and examples"
                                FontSize="16"
-                               Opacity="0.7"/>
+                               Opacity="0.7"
+                               Margin="0,0,0,12"/>
+                    
+                    <!-- Daily Goal Progress -->
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Target" 
+                                               Width="20" 
+                                               Height="20"
+                                               Foreground="{StaticResource SecondaryBrush}"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,8,0"/>
+                        <TextBlock Text="Daily Goal: 7 of 10 words reviewed" 
+                                   FontSize="14"
+                                   VerticalAlignment="Center"/>
+                        <ProgressBar Value="70" 
+                                     Maximum="100" 
+                                     Width="100"
+                                     Height="6"
+                                     Margin="12,0,0,0"
+                                     Foreground="{StaticResource SecondaryBrush}"/>
+                    </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- Category Filter -->
+                    <ComboBox MinWidth="120"
+                              Margin="0,0,16,0"
+                              materialDesign:HintAssist.Hint="Category">
+                        <ComboBoxItem Content="All Types"/>
+                        <ComboBoxItem Content="Nouns"/>
+                        <ComboBoxItem Content="Verbs"/>
+                        <ComboBoxItem Content="Adjectives"/>
+                        <ComboBoxItem Content="Expressions"/>
+                        <ComboBoxItem Content="Greetings"/>
+                    </ComboBox>
+                    
                     <!-- JLPT Level Filter -->
                     <ComboBox ItemsSource="{Binding JLPTLevels}"
                               SelectedItem="{Binding SelectedJLPTLevel}"
@@ -639,6 +671,36 @@
                     </ScrollViewer>
                 </Grid>
             </materialDesign:Card>
+        </Grid>
+        
+        <!-- Floating Action Buttons -->
+        <Grid Grid.Row="2"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Bottom"
+              Margin="0,0,24,24">
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Right">
+                <!-- Quick Review Button -->
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        Background="{StaticResource SuccessBrush}"
+                        BorderBrush="{StaticResource SuccessBrush}"
+                        Margin="0,0,0,16"
+                        ToolTip="Start Quick Review">
+                    <materialDesign:PackIcon Kind="Lightning" 
+                                           Width="24" 
+                                           Height="24"/>
+                </Button>
+                
+                <!-- Add New Word Button -->
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        Background="{StaticResource SecondaryBrush}"
+                        BorderBrush="{StaticResource SecondaryBrush}"
+                        ToolTip="Add Custom Word">
+                    <materialDesign:PackIcon Kind="Plus" 
+                                           Width="20" 
+                                           Height="20"/>
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
