@@ -10,8 +10,12 @@ namespace JapaneseTracker.Converters
         {
             if (value is double percent)
             {
-                // Calculate the circumference for a circle with radius ~32 (based on 80x80 size)
-                double radius = 32;
+                // Calculate the circumference for a circle with radius (default 32, based on 80x80 size)
+                double radius = 32; // Default radius
+                if (parameter is string radiusParam && double.TryParse(radiusParam, out double parsedRadius))
+                {
+                    radius = parsedRadius;
+                }
                 double circumference = 2 * Math.PI * radius;
                 
                 // Calculate the dash length based on percentage
