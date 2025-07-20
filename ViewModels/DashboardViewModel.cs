@@ -26,7 +26,7 @@ namespace JapaneseTracker.ViewModels
             
             JLPTLevels = new ObservableCollection<JLPTLevelInfo>(_jlptService.GetAllLevels());
             
-            _ = LoadDashboardDataAsync();
+            // Asynchronous initialization moved to InitializeAsync method.
         }
         
         public DashboardViewModel(
