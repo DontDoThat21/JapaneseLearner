@@ -12,8 +12,8 @@ namespace JapaneseTracker.ViewModels
 {
     public class JLPTProgressViewModel : BaseViewModel
     {
-        private readonly DatabaseService _databaseService;
-        private readonly JLPTService _jlptService;
+        private readonly DatabaseService? _databaseService;
+        private readonly JLPTService? _jlptService;
         
         private ObservableCollection<JLPTProgress> _jlptProgressList = new();
         private JLPTProgress? _selectedProgress;
@@ -32,9 +32,13 @@ namespace JapaneseTracker.ViewModels
         private bool _showDetailedView = false;
         private string _selectedCategory = "Kanji";
         
+        public JLPTProgressViewModel() : this(null, null)
+        {
+        }
+        
         public JLPTProgressViewModel(
-            DatabaseService databaseService,
-            JLPTService jlptService)
+            DatabaseService? databaseService,
+            JLPTService? jlptService)
         {
             _databaseService = databaseService;
             _jlptService = jlptService;
@@ -50,8 +54,15 @@ namespace JapaneseTracker.ViewModels
             JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
             Categories = new ObservableCollection<string> { "Kanji", "Vocabulary", "Grammar" };
             
-            // Initialize
-            _ = InitializeAsync();
+            // Initialize with sample data if services are not available
+            if (_databaseService != null && _jlptService != null)
+            {
+                _ = InitializeAsync();
+            }
+            else
+            {
+                InitializeWithSampleData();
+            }
         }
         
         public ObservableCollection<JLPTProgress> JLPTProgressList
@@ -165,6 +176,8 @@ namespace JapaneseTracker.ViewModels
         
         private async Task InitializeAsync()
         {
+            if (_databaseService == null) return;
+            
             CurrentUser = await _databaseService.GetUserByUsernameAsync("DefaultUser");
             if (CurrentUser != null)
             {
@@ -173,9 +186,80 @@ namespace JapaneseTracker.ViewModels
             }
         }
         
+        private void InitializeWithSampleData()
+        {
+            // Create sample data for demonstration when services are not available
+            var sampleProgressList = new List<JLPTProgress>();
+            
+            var levels = new[] { "N5", "N4", "N3", "N2", "N1" };
+            var progressValues = new[] { 75.0, 60.0, 40.0, 25.0, 10.0 };
+            
+            for (int i = 0; i < levels.Length; i++)
+            {
+                var levelProgress = CreateSampleJLPTProgress(levels[i], progressValues[i]);
+                sampleProgressList.Add(levelProgress);
+            }
+            
+            JLPTProgressList = new ObservableCollection<JLPTProgress>(sampleProgressList);
+            SelectedProgress = JLPTProgressList.FirstOrDefault(p => p.Level == CurrentLevel);
+            
+            // Load sample detailed data
+            LoadSampleDetailedData();
+            LoadSampleRecommendations();
+            LoadSampleExamReadiness();
+            
+            CurrentStreak = 12; // Sample streak
+        }
+        
+        private JLPTProgress CreateSampleJLPTProgress(string level, double baseProgress)
+        {
+            var random = new Random();
+            var variation = (random.NextDouble() - 0.5) * 20; // ±10% variation
+            
+            var kanjiProgress = Math.Max(0, Math.Min(100, baseProgress + variation));
+            var vocabularyProgress = Math.Max(0, Math.Min(100, baseProgress + variation));
+            var grammarProgress = Math.Max(0, Math.Min(100, baseProgress + variation));
+            var overallProgress = (kanjiProgress + vocabularyProgress + grammarProgress) / 3;
+            
+            var levelInfo = GetSampleLevelInfo(level);
+            
+            return new JLPTProgress
+            {
+                Level = level,
+                KanjiProgress = kanjiProgress,
+                VocabularyProgress = vocabularyProgress,
+                GrammarProgress = grammarProgress,
+                OverallProgress = overallProgress,
+                KanjiLearned = (int)(levelInfo.RequiredKanji * kanjiProgress / 100),
+                VocabularyLearned = (int)(levelInfo.RequiredVocabulary * vocabularyProgress / 100),
+                GrammarLearned = (int)(levelInfo.RequiredGrammar * grammarProgress / 100),
+                RequiredKanji = levelInfo.RequiredKanji,
+                RequiredVocabulary = levelInfo.RequiredVocabulary,
+                RequiredGrammar = levelInfo.RequiredGrammar,
+                IsCompleted = overallProgress >= 90
+            };
+        }
+        
+        private JLPTLevelInfo GetSampleLevelInfo(string level)
+        {
+            return level switch
+            {
+                "N5" => new JLPTLevelInfo { RequiredKanji = 100, RequiredVocabulary = 800, RequiredGrammar = 50 },
+                "N4" => new JLPTLevelInfo { RequiredKanji = 300, RequiredVocabulary = 1500, RequiredGrammar = 80 },
+                "N3" => new JLPTLevelInfo { RequiredKanji = 650, RequiredVocabulary = 3750, RequiredGrammar = 200 },
+                "N2" => new JLPTLevelInfo { RequiredKanji = 1000, RequiredVocabulary = 6000, RequiredGrammar = 400 },
+                "N1" => new JLPTLevelInfo { RequiredKanji = 2000, RequiredVocabulary = 10000, RequiredGrammar = 800 },
+                _ => new JLPTLevelInfo { RequiredKanji = 100, RequiredVocabulary = 800, RequiredGrammar = 50 }
+            };
+        }
+        
         private async Task LoadProgressAsync()
         {
-            if (CurrentUser == null) return;
+            if (CurrentUser == null || _databaseService == null || _jlptService == null) 
+            {
+                InitializeWithSampleData();
+                return;
+            }
             
             IsLoading = true;
             try
@@ -209,6 +293,7 @@ namespace JapaneseTracker.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading JLPT progress: {ex.Message}");
+                InitializeWithSampleData();
             }
             finally
             {
@@ -249,7 +334,11 @@ namespace JapaneseTracker.ViewModels
         
         private async Task LoadDetailedDataAsync()
         {
-            if (CurrentUser == null) return;
+            if (CurrentUser == null || _databaseService == null) 
+            {
+                LoadSampleDetailedData();
+                return;
+            }
             
             try
             {
@@ -316,14 +405,54 @@ namespace JapaneseTracker.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading detailed data: {ex.Message}");
+                LoadSampleDetailedData();
             }
+        }
+        
+        private void LoadSampleDetailedData()
+        {
+            // Sample weak kanji items
+            var sampleKanji = new List<StudyItem>
+            {
+                new StudyItem { Id = 1, Content = "日", Meaning = "Day, Sun", Reading = "ニチ, ジツ, ひ", JLPTLevel = "N5", SRSLevel = 1, IsWeak = true },
+                new StudyItem { Id = 2, Content = "人", Meaning = "Person", Reading = "ジン, ニン, ひと", JLPTLevel = "N5", SRSLevel = 2, IsWeak = true },
+                new StudyItem { Id = 3, Content = "年", Meaning = "Year", Reading = "ネン, とし", JLPTLevel = "N5", SRSLevel = 1, IsWeak = true }
+            };
+            WeakKanjiItems = new ObservableCollection<StudyItem>(sampleKanji);
+            
+            // Sample weak vocabulary items
+            var sampleVocabulary = new List<StudyItem>
+            {
+                new StudyItem { Id = 1, Content = "こんにちは", Meaning = "Hello", Reading = "konnichiwa", JLPTLevel = "N5", SRSLevel = 2, IsWeak = true },
+                new StudyItem { Id = 2, Content = "ありがとう", Meaning = "Thank you", Reading = "arigatou", JLPTLevel = "N5", SRSLevel = 1, IsWeak = true },
+                new StudyItem { Id = 3, Content = "すみません", Meaning = "Excuse me/Sorry", Reading = "sumimasen", JLPTLevel = "N5", SRSLevel = 2, IsWeak = true }
+            };
+            WeakVocabularyItems = new ObservableCollection<StudyItem>(sampleVocabulary);
+            
+            // Sample weak grammar items
+            var sampleGrammar = new List<StudyItem>
+            {
+                new StudyItem { Id = 1, Content = "です", Meaning = "Copula (polite)", Reading = "Sentence ending particle", JLPTLevel = "N5", SRSLevel = 1, IsWeak = true },
+                new StudyItem { Id = 2, Content = "を", Meaning = "Object marker", Reading = "Particle", JLPTLevel = "N5", SRSLevel = 2, IsWeak = true },
+                new StudyItem { Id = 3, Content = "が", Meaning = "Subject marker", Reading = "Particle", JLPTLevel = "N5", SRSLevel = 1, IsWeak = true }
+            };
+            WeakGrammarItems = new ObservableCollection<StudyItem>(sampleGrammar);
         }
         
         private async Task LoadStudyRecommendationsAsync()
         {
             try
             {
-                var recommendations = GetStudyRecommendations(CurrentLevel);
+                List<string> recommendations;
+                
+                if (_jlptService != null)
+                {
+                    recommendations = GetStudyRecommendations(CurrentLevel);
+                }
+                else
+                {
+                    recommendations = GetSampleRecommendations(CurrentLevel);
+                }
                 
                 // Add personalized recommendations based on weak areas
                 if (SelectedProgress != null)
@@ -343,7 +472,62 @@ namespace JapaneseTracker.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading study recommendations: {ex.Message}");
+                LoadSampleRecommendations();
             }
+        }
+        
+        private void LoadSampleRecommendations()
+        {
+            var recommendations = GetSampleRecommendations(CurrentLevel);
+            StudyRecommendations = new ObservableCollection<string>(recommendations);
+        }
+        
+        private List<string> GetSampleRecommendations(string level)
+        {
+            return level switch
+            {
+                "N5" => new List<string>
+                {
+                    "Master Hiragana and Katakana completely",
+                    "Learn basic kanji (100 characters)",
+                    "Study essential vocabulary (800 words)",
+                    "Practice basic grammar patterns",
+                    "Read simple texts and manga"
+                },
+                "N4" => new List<string>
+                {
+                    "Expand kanji knowledge (300 characters)",
+                    "Build vocabulary (1500 words)",
+                    "Study intermediate grammar",
+                    "Practice reading short articles",
+                    "Listen to slow-paced conversations"
+                },
+                "N3" => new List<string>
+                {
+                    "Learn more complex kanji (650 characters)",
+                    "Expand vocabulary significantly (3750 words)",
+                    "Master intermediate grammar patterns",
+                    "Read news articles and short stories",
+                    "Listen to normal-speed conversations"
+                },
+                "N2" => new List<string>
+                {
+                    "Study advanced kanji (1000 characters)",
+                    "Master extensive vocabulary (6000 words)",
+                    "Learn complex grammar structures",
+                    "Read newspapers and novels",
+                    "Listen to news and documentaries"
+                },
+                "N1" => new List<string>
+                {
+                    "Master all common kanji (2000+ characters)",
+                    "Achieve native-level vocabulary (10000+ words)",
+                    "Understand nuanced grammar",
+                    "Read academic and technical texts",
+                    "Understand rapid natural speech"
+                },
+                _ => new List<string> { "Start with N5 level studies" }
+            };
         }
         
         private async Task LoadExamReadinessAsync()
@@ -363,7 +547,17 @@ namespace JapaneseTracker.ViewModels
                         _ => "Beginner"
                     };
                     
-                    var timeToReady = GetEstimatedTimeToNext(CurrentLevel);
+                    TimeSpan timeToReady;
+                    if (_jlptService != null)
+                    {
+                        timeToReady = GetEstimatedTimeToNext(CurrentLevel);
+                    }
+                    else
+                    {
+                        // Sample estimated time based on readiness score
+                        var weeksToReady = Math.Max(1, (int)((100 - readinessScore) / 10));
+                        timeToReady = TimeSpan.FromDays(weeksToReady * 7);
+                    }
                     
                     var feedback = new List<string>();
                     if (SelectedProgress.KanjiProgress < 80)
@@ -372,6 +566,9 @@ namespace JapaneseTracker.ViewModels
                         feedback.Add($"Learn {SelectedProgress.RequiredVocabulary - SelectedProgress.VocabularyLearned} more vocabulary words");
                     if (SelectedProgress.GrammarProgress < 80)
                         feedback.Add($"Practice {SelectedProgress.RequiredGrammar - SelectedProgress.GrammarLearned} more grammar patterns");
+                    
+                    if (feedback.Count == 0)
+                        feedback.Add("Great progress! Keep up the consistent study routine.");
                     
                     ExamReadiness = new ExamReadiness
                     {
@@ -387,17 +584,47 @@ namespace JapaneseTracker.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading exam readiness: {ex.Message}");
+                LoadSampleExamReadiness();
             }
+        }
+        
+        private void LoadSampleExamReadiness()
+        {
+            ExamReadiness = new ExamReadiness
+            {
+                Level = CurrentLevel,
+                ReadinessScore = 75,
+                ReadinessLevel = "Good",
+                EstimatedTimeToReady = TimeSpan.FromDays(28),
+                Feedback = new List<string>
+                {
+                    "Study 25 more kanji characters",
+                    "Learn 200 more vocabulary words",
+                    "Practice 15 more grammar patterns"
+                },
+                IsReady = false
+            };
         }
         
         private async Task LoadRecentStudySessionsAsync()
         {
             try
             {
-                if (CurrentUser != null)
+                if (CurrentUser != null && _databaseService != null)
                 {
                     var sessions = await _databaseService.GetStudySessionsByUserAsync(CurrentUser.UserId);
                     RecentStudySessions = new ObservableCollection<StudySession>(sessions.Take(5));
+                }
+                else
+                {
+                    // Sample study sessions
+                    var sampleSessions = new List<StudySession>
+                    {
+                        new StudySession { SessionId = 1, StartTime = DateTime.Now.AddDays(-1), StudyType = "Kanji", ItemsStudied = 25 },
+                        new StudySession { SessionId = 2, StartTime = DateTime.Now.AddDays(-2), StudyType = "Vocabulary", ItemsStudied = 30 },
+                        new StudySession { SessionId = 3, StartTime = DateTime.Now.AddDays(-3), StudyType = "Grammar", ItemsStudied = 15 }
+                    };
+                    RecentStudySessions = new ObservableCollection<StudySession>(sampleSessions);
                 }
             }
             catch (Exception ex)
@@ -410,7 +637,7 @@ namespace JapaneseTracker.ViewModels
         {
             try
             {
-                if (CurrentUser != null)
+                if (CurrentUser != null && _databaseService != null)
                 {
                     var sessions = await _databaseService.GetStudySessionsByUserAsync(CurrentUser.UserId);
                     
@@ -433,6 +660,10 @@ namespace JapaneseTracker.ViewModels
                     
                     CurrentStreak = streak;
                 }
+                else
+                {
+                    // Sample streak already set in InitializeWithSampleData
+                }
             }
             catch (Exception ex)
             {
@@ -442,18 +673,31 @@ namespace JapaneseTracker.ViewModels
         
         public List<string> GetStudyRecommendations(string level)
         {
-            return _jlptService.GetRecommendedStudyPlan(level);
+            if (_jlptService != null)
+            {
+                return _jlptService.GetRecommendedStudyPlan(level);
+            }
+            return GetSampleRecommendations(level);
         }
         
         public TimeSpan GetEstimatedTimeToNext(string currentLevel)
         {
-            var nextLevel = _jlptService.GetNextLevel(currentLevel);
-            return _jlptService.GetEstimatedStudyTime(currentLevel, nextLevel);
+            if (_jlptService != null)
+            {
+                var nextLevel = _jlptService.GetNextLevel(currentLevel);
+                return _jlptService.GetEstimatedStudyTime(currentLevel, nextLevel);
+            }
+            // Sample estimation
+            return TimeSpan.FromDays(90);
         }
         
         public JLPTLevelInfo GetLevelInfo(string level)
         {
-            return _jlptService.GetLevelInfo(level);
+            if (_jlptService != null)
+            {
+                return _jlptService.GetLevelInfo(level);
+            }
+            return GetSampleLevelInfo(level);
         }
     }
 }
