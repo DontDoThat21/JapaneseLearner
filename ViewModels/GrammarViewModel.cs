@@ -23,6 +23,26 @@ namespace JapaneseTracker.ViewModels
         private bool _isLoading = false;
         private User? _currentUser;
         
+        /// <summary>
+        /// Parameterless constructor for XAML design-time support.
+        /// </summary>
+        public GrammarViewModel()
+        {
+            _databaseService = null!;
+            _chatGPTService = null!;
+            
+            // Initialize collections for design-time
+            JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
+            
+            // Initialize commands with no-op implementations for design-time
+            LoadGrammarCommand = new RelayCommand(() => { });
+            SelectGrammarCommand = new RelayCommand<Grammar>((grammar) => { SelectedGrammar = grammar; });
+            StudyGrammarCommand = new RelayCommand<Grammar>((grammar) => { });
+            ExplainGrammarCommand = new RelayCommand<Grammar>((grammar) => { });
+            SearchGrammarCommand = new RelayCommand(() => { });
+            GetExplanationCommand = new RelayCommand<Grammar>((grammar) => { }); // Alias for compatibility
+        }
+        
         public GrammarViewModel(
             DatabaseService databaseService,
             ChatGPTJapaneseService chatGPTService)
@@ -35,6 +55,7 @@ namespace JapaneseTracker.ViewModels
             SelectGrammarCommand = new RelayCommand<Grammar>(SelectGrammar);
             StudyGrammarCommand = new RelayCommand<Grammar>(async (grammar) => await StudyGrammarAsync(grammar));
             ExplainGrammarCommand = new RelayCommand<Grammar>(async (grammar) => await ExplainGrammarAsync(grammar));
+            GetExplanationCommand = ExplainGrammarCommand; // Alias for compatibility
             SearchGrammarCommand = new RelayCommand(async () => await SearchGrammarAsync());
             
             JLPTLevels = new ObservableCollection<string> { "N5", "N4", "N3", "N2", "N1" };
@@ -46,13 +67,23 @@ namespace JapaneseTracker.ViewModels
         public ObservableCollection<Grammar> GrammarList
         {
             get => _grammarList;
-            set => SetProperty(ref _grammarList, value);
+            set 
+            { 
+                SetProperty(ref _grammarList, value);
+                OnPropertyChanged(nameof(LearnedCount));
+                OnPropertyChanged(nameof(ReviewDueCount));
+            }
         }
         
         public ObservableCollection<GrammarProgress> GrammarProgress
         {
             get => _grammarProgress;
-            set => SetProperty(ref _grammarProgress, value);
+            set 
+            { 
+                SetProperty(ref _grammarProgress, value);
+                OnPropertyChanged(nameof(LearnedCount));
+                OnPropertyChanged(nameof(ReviewDueCount));
+            }
         }
         
         public Grammar? SelectedGrammar
@@ -93,10 +124,15 @@ namespace JapaneseTracker.ViewModels
         
         public ObservableCollection<string> JLPTLevels { get; }
         
+        // Computed properties for statistics
+        public int LearnedCount => GrammarProgress.Count(gp => gp.UnderstandingLevel >= 60);
+        public int ReviewDueCount => GrammarProgress.Count(gp => gp.LastPracticed.Date < DateTime.Today);
+        
         public ICommand LoadGrammarCommand { get; }
         public ICommand SelectGrammarCommand { get; }
         public ICommand StudyGrammarCommand { get; }
         public ICommand ExplainGrammarCommand { get; }
+        public ICommand GetExplanationCommand { get; } // Alias for compatibility
         public ICommand SearchGrammarCommand { get; }
         
         private async Task InitializeAsync()
@@ -111,6 +147,8 @@ namespace JapaneseTracker.ViewModels
         
         private async Task LoadGrammarAsync()
         {
+            if (_databaseService == null) return; // Guard for design-time
+            
             IsLoading = true;
             try
             {
@@ -129,7 +167,7 @@ namespace JapaneseTracker.ViewModels
         
         private async Task LoadGrammarProgressAsync()
         {
-            if (CurrentUser == null) return;
+            if (CurrentUser == null || _databaseService == null) return; // Guard for design-time
             
             try
             {
@@ -157,7 +195,7 @@ namespace JapaneseTracker.ViewModels
         
         private async Task StudyGrammarAsync(Grammar? grammar)
         {
-            if (grammar == null || CurrentUser == null) return;
+            if (grammar == null || CurrentUser == null || _databaseService == null) return;
             
             try
             {
@@ -194,7 +232,7 @@ namespace JapaneseTracker.ViewModels
         
         private async Task ExplainGrammarAsync(Grammar? grammar)
         {
-            if (grammar == null) return;
+            if (grammar == null || _chatGPTService == null) return;
             
             try
             {
@@ -210,7 +248,7 @@ namespace JapaneseTracker.ViewModels
         
         private async Task SearchGrammarAsync()
         {
-            if (string.IsNullOrWhiteSpace(SearchText)) return;
+            if (string.IsNullOrWhiteSpace(SearchText) || _databaseService == null) return;
             
             IsLoading = true;
             try
