@@ -7,7 +7,7 @@ namespace JapaneseTracker.Converters
 {
     public class ViewNotImplementedConverter : IValueConverter
     {
-        private readonly string[] _implementedViews = { "Dashboard", "Kanji", "Vocabulary", "Grammar", "Practice" };
+        private readonly string[] _implementedViews = { "Dashboard", "Kanji", "Vocabulary", "Grammar", "Practice", "JLPT Progress" };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
